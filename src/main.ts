@@ -12,7 +12,7 @@ async function run(): Promise<void> {
     const versionSpec = resolveVersionInput();
     core.info(`Setup specmatic version spec ${versionSpec}`);
 
-    const ms: string = core.getInput('milliseconds')
+    const ms: string = '10';
     core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
 
     core.debug(new Date().toTimeString())

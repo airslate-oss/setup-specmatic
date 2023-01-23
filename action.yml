@@ -5,13 +5,6 @@ author: 'airSlate, Inc.'
 inputs:
   specmatic-version:
     description: 'The specmatic version to download (if necessary) and use.'
-
-  # TODO: remove this
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
-
 outputs:
   specmatic-version:
     description: 'The installed specmatic version. Useful when given a version range as input.'
