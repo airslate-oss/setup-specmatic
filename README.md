@@ -1,5 +1,5 @@
+<h1 align="center"><code>setup-specmatic</code></h1>
 <p align="center">
-  <h1><code>setup-specmatic</code></h1>
   <a href="https://github.com/airslate-oss/setup-specmatic/actions">
     <img alt="typescript-action status" src="https://github.com/airslate-oss/setup-specmatic/workflows/build-test/badge.svg">
   </a>
