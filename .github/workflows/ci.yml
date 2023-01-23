@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-name: Test
+name: CI
 
 on: # rebuild any PRs and main branch changes
   pull_request:
