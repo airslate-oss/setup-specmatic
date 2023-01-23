@@ -1,15 +1,11 @@
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
+# This file is part of the setup-specmatic.
 #
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
+# Copyright (c) 2023 airSlate, Inc.
 #
-# ******** NOTE ********
-# We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
-# supported CodeQL languages.
-#
-name: "CodeQL"
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+name: CodeQL
 
 on:
   push:
@@ -19,6 +15,12 @@ on:
     branches: [ main ]
   schedule:
     - cron: '31 7 * * 3'
+      #      | | | | |
+      #      | | | | |____ day of the week (0 - 6 or SUN-SAT)
+      #      | | | |____ month (1 - 12 or JAN-DEC)
+      #      | | |____ day of the month (1 - 31)
+      #      | |____ hour (0 - 23)
+      #      |____ minute (0 - 59)
 
 jobs:
   analyze:

@@ -1,8 +1,10 @@
-# `dist/index.js` is a special file in Actions.
-# When you reference an action with `uses:` in a workflow,
-# `index.js` is the code that will run.
-# For our project, we generate this file through a build process from other source files.
-# We need to make sure the checked-in `index.js` actually matches what we expect it to be.
+# This file is part of the setup-specmatic.
+#
+# Copyright (c) 2023 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
 name: Check dist/
 
 on:
