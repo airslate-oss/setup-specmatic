@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/airslate-oss/setup-specmatic.git"
   },
   "keywords": [
     "actions",
@@ -23,7 +23,7 @@
     "setup"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@actions/core": "^1.10.0"
   },
