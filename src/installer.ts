@@ -31,6 +31,16 @@ async function installSpecmaticVersion(
   await extractSpecmatic(downloadPath, localPath)
   core.info(`Successfully extracted specmatic to ${localPath}`)
 
+  const shortcut = path.join(localPath, 'specmatic')
+  await fs.promises.writeFile(
+    shortcut,
+    `#!/bin/bash\njava -jar ${path.resolve(localPath)}`
+  )
+  core.info(`Successfully created shortcut at ${shortcut}`)
+
+  await fs.promises.chmod(shortcut, '0755')
+  core.info(`Successfully change mode for shortcut to 0755`)
+
   core.info(`Adding ${localDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
     localDir,

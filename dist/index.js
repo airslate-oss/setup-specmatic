@@ -62,6 +62,11 @@ function installSpecmaticVersion(info) {
         const localPath = path.join(localDir, FILE_NAME);
         yield extractSpecmatic(downloadPath, localPath);
         core.info(`Successfully extracted specmatic to ${localPath}`);
+        const shortcut = path.join(localPath, 'specmatic');
+        yield fs_1.default.promises.writeFile(shortcut, `#!/bin/bash\njava -jar ${path.resolve(localPath)}`);
+        core.info(`Successfully created shortcut at ${shortcut}`);
+        yield fs_1.default.promises.chmod(shortcut, '0755');
+        core.info(`Successfully change mode for shortcut to 0755`);
         core.info(`Adding ${localDir} to the cache...`);
         const cachedDir = yield tc.cacheDir(localDir, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedDir}`);
