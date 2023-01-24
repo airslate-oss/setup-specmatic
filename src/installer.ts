@@ -4,6 +4,9 @@ import * as path from 'path'
 import fs from 'fs'
 import os from 'os'
 
+const ROOT_PATH = 'specmatic'
+const FILE_NAME = 'specmatic.jar'
+
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
   resolvedVersion: string
@@ -20,13 +23,24 @@ async function installSpecmaticVersion(
   const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
 
   const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
-
   core.info(`Successfully download specmatic to ${downloadPath}`)
-  const downloadDirname = path.dirname(downloadPath)
 
-  core.info(`Adding ${downloadDirname} to the cache...`)
+  const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH)
+  const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME)
+
+  fs.mkdir(newSpecmaticDir, {recursive: true}, err => {
+    if (err) throw err
+    core.info(`Successfully created ${newSpecmaticDir}`)
+  })
+
+  fs.rename(downloadPath, newSpecmaticPath, function (err) {
+    if (err) throw err
+    core.info(`Successfully moved specmatic to ${newSpecmaticPath}`)
+  })
+
+  core.info(`Adding ${newSpecmaticDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    downloadDirname,
+    newSpecmaticDir,
     'specmatic',
     info.resolvedVersion,
     undefined
@@ -38,12 +52,12 @@ async function installSpecmaticVersion(
 async function getInfoFromDist(
   versionSpec: string
 ): Promise<ISpecmaticVersionInfo | null> {
-  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`
+  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`
 
   return {
     downloadUrl,
     resolvedVersion: versionSpec,
-    fileName: 'specmatic.jar'
+    fileName: FILE_NAME
   } as ISpecmaticVersionInfo
 }
 
