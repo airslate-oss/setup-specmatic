@@ -32,10 +32,13 @@ async function installSpecmaticVersion(
   core.info(`Successfully extracted specmatic to ${localPath}`)
 
   const shortcut = path.join(localPath, 'specmatic')
-  await fs.promises.writeFile(
-    shortcut,
-    `#!/bin/bash\njava -jar ${path.resolve(localPath)}`
-  )
+
+  const stream = fs.createWriteStream(shortcut)
+  stream.once('open', () => {
+    stream.write('#!/bin/bash\n')
+    stream.write(`java -jar ${path.resolve(localPath)}\n`)
+    stream.end()
+  })
   core.info(`Successfully created shortcut at ${shortcut}`)
 
   await fs.promises.chmod(shortcut, '0755')

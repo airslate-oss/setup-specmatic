@@ -63,7 +63,12 @@ function installSpecmaticVersion(info) {
         yield extractSpecmatic(downloadPath, localPath);
         core.info(`Successfully extracted specmatic to ${localPath}`);
         const shortcut = path.join(localPath, 'specmatic');
-        yield fs_1.default.promises.writeFile(shortcut, `#!/bin/bash\njava -jar ${path.resolve(localPath)}`);
+        const stream = fs_1.default.createWriteStream(shortcut);
+        stream.once('open', () => {
+            stream.write('#!/bin/bash\n');
+            stream.write(`java -jar ${path.resolve(localPath)}\n`);
+            stream.end();
+        });
         core.info(`Successfully created shortcut at ${shortcut}`);
         yield fs_1.default.promises.chmod(shortcut, '0755');
         core.info(`Successfully change mode for shortcut to 0755`);
