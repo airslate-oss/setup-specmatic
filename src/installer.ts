@@ -4,8 +4,10 @@ import * as path from 'path'
 import fs from 'fs'
 import os from 'os'
 
-const ROOT_PATH = 'specmatic'
-const FILE_NAME = 'specmatic.jar'
+export const TOOL_NAME = 'specmatic'
+
+const FILE_NAME = `${TOOL_NAME}.jar`
+const ROOT_PATH = `${TOOL_NAME}`
 
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
@@ -58,6 +60,8 @@ async function installSpecmaticVersion(
     undefined
   )
   core.info(`Successfully cached specmatic to ${cachedDir}`)
+
+  createExecutable(cachedDir)
   return cachedDir
 }
 
@@ -69,6 +73,14 @@ async function extractSpecmatic(
 
   fs.promises.mkdir(localDir, {recursive: true})
   fs.promises.rename(downloadPath, localPath)
+}
+
+async function createExecutable(basePath: string): Promise<void> {
+  const jarPath = path.join(basePath, FILE_NAME)
+  const executablePath = path.join(basePath, TOOL_NAME)
+
+  fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
+  fs.chmodSync(executablePath, 0o555)
 }
 
 async function getInfoFromDist(
