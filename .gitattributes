@@ -1,1 +1,15 @@
-dist/** -diff linguist-generated=true 
+# This file is part of the setup-specmatic.
+#
+# Copyright (c) 2023 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+# Defining attributes per path.
+#
+# For more see: https://git-scm.com/docs/gitattributes
+
+# Auto-detect text files, ensure they use LF.
+* text=auto eol=lf
+
+dist/** -diff linguist-generated=true

@@ -173,7 +173,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const installer = __importStar(__nccwpck_require__(1480));
-const path_1 = __importDefault(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -187,7 +186,7 @@ function run() {
             if (versionSpec) {
                 const installDir = yield installer.getSpecmatic(versionSpec);
                 // const installDirVersion = path.basename(path.dirname(installDir))
-                core.addPath(path_1.default.join(installDir, 'bin'));
+                core.addPath(installDir);
                 core.info('Added specmatic to the path');
             }
         }

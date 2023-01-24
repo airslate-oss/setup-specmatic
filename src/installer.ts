@@ -38,7 +38,6 @@ async function installSpecmaticVersion(
   info: ISpecmaticVersionInfo
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`)
-
   const downloadPath = await tc.downloadTool(
     info.downloadUrl,
     getFileName(info)
