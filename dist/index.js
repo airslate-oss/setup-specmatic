@@ -58,22 +58,20 @@ function installSpecmaticVersion(info) {
         const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
         const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const localDir = `${ROOT_PATH}-${info.resolvedVersion}`;
-        const localPath = path.join(localDir, FILE_NAME);
-        fs_1.default.mkdir(localDir, { recursive: true }, err => {
-            if (err)
-                throw err;
-            core.info(`Successfully created directory ${path.resolve(localDir)}`);
-        });
-        fs_1.default.rename(downloadPath, localPath, function (err) {
-            if (err)
-                throw err;
-            core.info(`Successfully moved specmatic to ${localPath}`);
-        });
+        const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME);
+        yield extractSpecmatic(downloadPath, localPath);
+        core.info(`Successfully extracted specmatic to ${localPath}`);
         core.info(`Adding ${localPath} to the cache...`);
         const cachedDir = yield tc.cacheDir(localPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedDir}`);
         return cachedDir;
+    });
+}
+function extractSpecmatic(downloadPath, localPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const localDir = path.dirname(localPath);
+        fs_1.default.promises.mkdir(localDir, { recursive: true });
+        fs_1.default.promises.rename(downloadPath, localPath);
     });
 }
 function getInfoFromDist(versionSpec) {

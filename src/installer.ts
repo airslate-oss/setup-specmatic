@@ -25,18 +25,9 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  const localDir = `${ROOT_PATH}-${info.resolvedVersion}`
-  const localPath = path.join(localDir, FILE_NAME)
-
-  fs.mkdir(localDir, {recursive: true}, err => {
-    if (err) throw err
-    core.info(`Successfully created directory ${path.resolve(localDir)}`)
-  })
-
-  fs.rename(downloadPath, localPath, function (err) {
-    if (err) throw err
-    core.info(`Successfully moved specmatic to ${localPath}`)
-  })
+  const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME)
+  await extractSpecmatic(downloadPath, localPath)
+  core.info(`Successfully extracted specmatic to ${localPath}`)
 
   core.info(`Adding ${localPath} to the cache...`)
   const cachedDir = await tc.cacheDir(
@@ -47,6 +38,16 @@ async function installSpecmaticVersion(
   )
   core.info(`Successfully cached specmatic to ${cachedDir}`)
   return cachedDir
+}
+
+async function extractSpecmatic(
+  downloadPath: string,
+  localPath: string
+): Promise<void> {
+  const localDir = path.dirname(localPath)
+
+  fs.promises.mkdir(localDir, {recursive: true})
+  fs.promises.rename(downloadPath, localPath)
 }
 
 async function getInfoFromDist(
