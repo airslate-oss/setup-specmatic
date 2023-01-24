@@ -47,32 +47,32 @@ const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-const os_1 = __importDefault(__nccwpck_require__(2037));
+// import os from 'os'
 const ROOT_PATH = 'specmatic';
 const FILE_NAME = 'specmatic.jar';
+const LOCAL_PATH = path.join(ROOT_PATH, FILE_NAME);
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
-        const isWindows = os_1.default.platform() === 'win32';
-        const tempDir = process.env.RUNNER_TEMP || '.';
-        const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
-        const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
-        core.info(`Successfully download specmatic to ${downloadPath}`);
-        const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH);
-        const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME);
-        fs_1.default.mkdir(newSpecmaticDir, { recursive: true }, err => {
-            if (err)
-                throw err;
-            core.info(`Successfully created ${newSpecmaticDir}`);
-        });
-        fs_1.default.rename(downloadPath, newSpecmaticPath, function (err) {
-            if (err)
-                throw err;
-            core.info(`Successfully moved specmatic to ${newSpecmaticPath}`);
-        });
-        core.info(`Adding ${newSpecmaticDir} to the cache...`);
-        const cachedDir = yield tc.cacheDir(newSpecmaticDir, 'specmatic', info.resolvedVersion, undefined);
-        core.info(`Successfully cached go to ${cachedDir}`);
+        // const isWindows = os.platform() === 'win32'
+        // const tempDir = process.env.RUNNER_TEMP || '.'
+        // const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
+        const downloadPath = yield tc.downloadTool(info.downloadUrl, LOCAL_PATH);
+        const specmaticDir = path.dirname(path.join(downloadPath, LOCAL_PATH));
+        core.info(`Successfully download specmatic to ${specmaticDir}`);
+        // const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH)
+        // const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME)
+        // fs.mkdir(newSpecmaticDir, {recursive: true}, err => {
+        //   if (err) throw err
+        //   core.info(`Successfully created ${newSpecmaticDir}`)
+        // })
+        // fs.rename(downloadPath, newSpecmaticPath, function (err) {
+        //   if (err) throw err
+        //   core.info(`Successfully moved specmatic to ${newSpecmaticPath}`)
+        // })
+        core.info(`Adding ${specmaticDir} to the cache...`);
+        const cachedDir = yield tc.cacheDir(specmaticDir, 'specmatic', info.resolvedVersion, undefined);
+        core.info(`Successfully cached specmatic to ${cachedDir}`);
         return cachedDir;
     });
 }

@@ -2,10 +2,11 @@ import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
 import * as path from 'path'
 import fs from 'fs'
-import os from 'os'
+// import os from 'os'
 
 const ROOT_PATH = 'specmatic'
 const FILE_NAME = 'specmatic.jar'
+const LOCAL_PATH = path.join(ROOT_PATH, FILE_NAME)
 
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
@@ -18,34 +19,36 @@ async function installSpecmaticVersion(
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`)
 
-  const isWindows = os.platform() === 'win32'
-  const tempDir = process.env.RUNNER_TEMP || '.'
-  const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
+  // const isWindows = os.platform() === 'win32'
+  // const tempDir = process.env.RUNNER_TEMP || '.'
+  // const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
 
-  const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
-  core.info(`Successfully download specmatic to ${downloadPath}`)
+  const downloadPath = await tc.downloadTool(info.downloadUrl, LOCAL_PATH)
+  const specmaticDir = path.dirname(path.join(downloadPath, LOCAL_PATH))
 
-  const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH)
-  const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME)
+  core.info(`Successfully download specmatic to ${specmaticDir}`)
 
-  fs.mkdir(newSpecmaticDir, {recursive: true}, err => {
-    if (err) throw err
-    core.info(`Successfully created ${newSpecmaticDir}`)
-  })
+  // const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH)
+  // const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME)
 
-  fs.rename(downloadPath, newSpecmaticPath, function (err) {
-    if (err) throw err
-    core.info(`Successfully moved specmatic to ${newSpecmaticPath}`)
-  })
+  // fs.mkdir(newSpecmaticDir, {recursive: true}, err => {
+  //   if (err) throw err
+  //   core.info(`Successfully created ${newSpecmaticDir}`)
+  // })
 
-  core.info(`Adding ${newSpecmaticDir} to the cache...`)
+  // fs.rename(downloadPath, newSpecmaticPath, function (err) {
+  //   if (err) throw err
+  //   core.info(`Successfully moved specmatic to ${newSpecmaticPath}`)
+  // })
+
+  core.info(`Adding ${specmaticDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    newSpecmaticDir,
+    specmaticDir,
     'specmatic',
     info.resolvedVersion,
     undefined
   )
-  core.info(`Successfully cached go to ${cachedDir}`)
+  core.info(`Successfully cached specmatic to ${cachedDir}`)
   return cachedDir
 }
 
