@@ -48,6 +48,8 @@ const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
+const ROOT_PATH = 'specmatic';
+const FILE_NAME = 'specmatic.jar';
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
@@ -56,20 +58,31 @@ function installSpecmaticVersion(info) {
         const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
         const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const downloadDirname = path.dirname(downloadPath);
-        core.info(`Adding ${downloadDirname} to the cache...`);
-        const cachedDir = yield tc.cacheDir(downloadDirname, 'specmatic', info.resolvedVersion, undefined);
+        const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH);
+        const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME);
+        fs_1.default.mkdir(newSpecmaticDir, { recursive: true }, err => {
+            if (err)
+                throw err;
+            core.info(`Successfully created ${newSpecmaticDir}`);
+        });
+        fs_1.default.rename(downloadPath, newSpecmaticPath, function (err) {
+            if (err)
+                throw err;
+            core.info(`Successfully moved specmatic to ${newSpecmaticPath}`);
+        });
+        core.info(`Adding ${newSpecmaticDir} to the cache...`);
+        const cachedDir = yield tc.cacheDir(newSpecmaticDir, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached go to ${cachedDir}`);
         return cachedDir;
     });
 }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
+        const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`;
         return {
             downloadUrl,
             resolvedVersion: versionSpec,
-            fileName: 'specmatic.jar'
+            fileName: FILE_NAME
         };
     });
 }
