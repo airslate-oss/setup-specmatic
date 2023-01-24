@@ -25,27 +25,35 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  const localDir = `${ROOT_PATH}-${info.resolvedVersion}`
-  const localPath = path.join(localDir, FILE_NAME)
+  const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME)
+  const extPath = await prepareSpecmaticDist(downloadPath, localPath)
 
-  fs.mkdir(localDir, {recursive: true}, err => {
-    if (err) throw err
-  })
-
-  fs.rename(downloadPath, localPath, function (err) {
-    if (err) throw err
-    core.info(`Successfully moved specmatic to ${path.resolve(localPath)}`)
-  })
-
-  core.info(`Adding ${localDir} to the cache...`)
+  core.info(`Adding ${extPath} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    localDir,
+    extPath,
     'specmatic',
     info.resolvedVersion,
     undefined
   )
   core.info(`Successfully cached specmatic to ${cachedDir}`)
   return cachedDir
+}
+
+export async function prepareSpecmaticDist(
+  downloadPath: string,
+  localPath: string
+): Promise<string> {
+  fs.mkdir(path.basename(localPath), {recursive: true}, err => {
+    if (err) throw err
+  })
+
+  const newPath = path.resolve(localPath)
+  fs.rename(downloadPath, newPath, function (err) {
+    if (err) throw err
+    core.info(`Successfully moved specmatic to ${newPath}`)
+  })
+
+  return newPath
 }
 
 async function getInfoFromDist(
