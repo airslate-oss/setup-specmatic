@@ -42,7 +42,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseGoVersionFile = exports.getSpecmatic = exports.prepareSpecmaticDist = void 0;
+exports.parseGoVersionFile = exports.getSpecmatic = void 0;
 const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
@@ -58,30 +58,24 @@ function installSpecmaticVersion(info) {
         const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
         const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME);
-        const extPath = yield prepareSpecmaticDist(downloadPath, localPath);
-        core.info(`Adding ${extPath} to the cache...`);
-        const cachedDir = yield tc.cacheDir(extPath, 'specmatic', info.resolvedVersion, undefined);
+        const localDir = `${ROOT_PATH}-${info.resolvedVersion}`;
+        const localPath = path.join(localDir, FILE_NAME);
+        fs_1.default.mkdir(localDir, { recursive: true }, err => {
+            if (err)
+                throw err;
+            core.info(`Successfully created directory ${path.resolve(localDir)}`);
+        });
+        fs_1.default.rename(downloadPath, localPath, function (err) {
+            if (err)
+                throw err;
+            core.info(`Successfully moved specmatic to ${localPath}`);
+        });
+        core.info(`Adding ${localPath} to the cache...`);
+        const cachedDir = yield tc.cacheDir(localPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedDir}`);
         return cachedDir;
     });
 }
-function prepareSpecmaticDist(downloadPath, localPath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        fs_1.default.mkdir(path.basename(localPath), { recursive: true }, err => {
-            if (err)
-                throw err;
-        });
-        const newPath = path.resolve(localPath);
-        fs_1.default.rename(downloadPath, newPath, function (err) {
-            if (err)
-                throw err;
-            core.info(`Successfully moved specmatic to ${newPath}`);
-        });
-        return newPath;
-    });
-}
-exports.prepareSpecmaticDist = prepareSpecmaticDist;
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`;
