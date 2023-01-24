@@ -58,11 +58,12 @@ function installSpecmaticVersion(info) {
         const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
         const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME);
+        const localDir = `${ROOT_PATH}-${info.resolvedVersion}`;
+        const localPath = path.join(localDir, FILE_NAME);
         yield extractSpecmatic(downloadPath, localPath);
         core.info(`Successfully extracted specmatic to ${localPath}`);
-        core.info(`Adding ${localPath} to the cache...`);
-        const cachedDir = yield tc.cacheDir(localPath, 'specmatic', info.resolvedVersion, undefined);
+        core.info(`Adding ${localDir} to the cache...`);
+        const cachedDir = yield tc.cacheDir(localDir, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedDir}`);
         return cachedDir;
     });

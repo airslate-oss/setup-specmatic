@@ -25,13 +25,15 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  const localPath = path.join(`${ROOT_PATH}-${info.resolvedVersion}`, FILE_NAME)
+  const localDir = `${ROOT_PATH}-${info.resolvedVersion}`
+  const localPath = path.join(localDir, FILE_NAME)
+
   await extractSpecmatic(downloadPath, localPath)
   core.info(`Successfully extracted specmatic to ${localPath}`)
 
-  core.info(`Adding ${localPath} to the cache...`)
+  core.info(`Adding ${localDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    localPath,
+    localDir,
     'specmatic',
     info.resolvedVersion,
     undefined
