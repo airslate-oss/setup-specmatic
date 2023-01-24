@@ -6,7 +6,6 @@ import os from 'os'
 
 const ROOT_PATH = 'specmatic'
 const FILE_NAME = 'specmatic.jar'
-const LOCAL_PATH = path.join(ROOT_PATH, FILE_NAME)
 
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
@@ -26,18 +25,21 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  fs.mkdir(ROOT_PATH, {recursive: true}, err => {
+  const localDir = `${ROOT_PATH}-${info.resolvedVersion}`
+  const localPath = path.join(localDir, FILE_NAME)
+
+  fs.mkdir(localDir, {recursive: true}, err => {
     if (err) throw err
   })
 
-  fs.rename(downloadPath, LOCAL_PATH, function (err) {
+  fs.rename(downloadPath, localPath, function (err) {
     if (err) throw err
-    core.info(`Successfully moved specmatic to ${LOCAL_PATH}`)
+    core.info(`Successfully moved specmatic to ${path.resolve(localPath)}`)
   })
 
-  core.info(`Adding ${ROOT_PATH} to the cache...`)
+  core.info(`Adding ${localDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    ROOT_PATH,
+    localDir,
     'specmatic',
     info.resolvedVersion,
     undefined
