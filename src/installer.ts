@@ -2,7 +2,7 @@ import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
 import * as path from 'path'
 import fs from 'fs'
-// import os from 'os'
+import os from 'os'
 
 const ROOT_PATH = 'specmatic'
 const FILE_NAME = 'specmatic.jar'
@@ -19,31 +19,25 @@ async function installSpecmaticVersion(
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`)
 
-  // const isWindows = os.platform() === 'win32'
-  // const tempDir = process.env.RUNNER_TEMP || '.'
-  // const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
+  const isWindows = os.platform() === 'win32'
+  const tempDir = process.env.RUNNER_TEMP || '.'
+  const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
 
-  const downloadPath = await tc.downloadTool(info.downloadUrl, LOCAL_PATH)
-  const specmaticDir = path.dirname(path.join(downloadPath, LOCAL_PATH))
+  const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
+  core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  core.info(`Successfully download specmatic to ${specmaticDir}`)
+  fs.mkdir(ROOT_PATH, {recursive: true}, err => {
+    if (err) throw err
+  })
 
-  // const newSpecmaticDir = path.join(path.dirname(downloadPath), ROOT_PATH)
-  // const newSpecmaticPath = path.join(newSpecmaticDir, FILE_NAME)
+  fs.rename(downloadPath, LOCAL_PATH, function (err) {
+    if (err) throw err
+    core.info(`Successfully moved specmatic to ${LOCAL_PATH}`)
+  })
 
-  // fs.mkdir(newSpecmaticDir, {recursive: true}, err => {
-  //   if (err) throw err
-  //   core.info(`Successfully created ${newSpecmaticDir}`)
-  // })
-
-  // fs.rename(downloadPath, newSpecmaticPath, function (err) {
-  //   if (err) throw err
-  //   core.info(`Successfully moved specmatic to ${newSpecmaticPath}`)
-  // })
-
-  core.info(`Adding ${specmaticDir} to the cache...`)
+  core.info(`Adding ${ROOT_PATH} to the cache...`)
   const cachedDir = await tc.cacheDir(
-    specmaticDir,
+    ROOT_PATH,
     'specmatic',
     info.resolvedVersion,
     undefined
