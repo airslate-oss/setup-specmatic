@@ -50,28 +50,33 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
 const ROOT_PATH = 'specmatic';
 const FILE_NAME = 'specmatic.jar';
+const getOs = () => {
+    switch (os_1.default.platform()) {
+        case 'win32':
+            return 'windows';
+        case 'darwin':
+            return 'macosx';
+        default:
+            return 'linux';
+    }
+};
+const getFileName = (info) => {
+    const isWindows = getOs() === 'win32';
+    const tempDir = process.env.RUNNER_TEMP || '.';
+    return isWindows ? path.join(tempDir, info.fileName) : undefined;
+};
+const getLocalDirname = (info) => {
+    return `${ROOT_PATH}-${info.resolvedVersion}-${getOs()}`;
+};
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
-        const isWindows = os_1.default.platform() === 'win32';
-        const tempDir = process.env.RUNNER_TEMP || '.';
-        const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined;
-        const downloadPath = yield tc.downloadTool(info.downloadUrl, fileName);
+        const downloadPath = yield tc.downloadTool(info.downloadUrl, getFileName(info));
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const localDir = `${ROOT_PATH}-${info.resolvedVersion}`;
+        const localDir = getLocalDirname(info);
         const localPath = path.join(localDir, FILE_NAME);
         yield extractSpecmatic(downloadPath, localPath);
         core.info(`Successfully extracted specmatic to ${localPath}`);
-        const shortcut = path.join(localDir, 'specmatic');
-        const stream = fs_1.default.createWriteStream(shortcut);
-        stream.once('open', () => {
-            stream.write('#!/bin/bash\n');
-            stream.write(`java -jar ${path.resolve(localDir)}\n`);
-            stream.end();
-        });
-        core.info(`Successfully created shortcut at ${shortcut}`);
-        yield fs_1.default.promises.chmod(shortcut, '0755');
-        core.info(`Successfully change mode for shortcut to 0755`);
         core.info(`Adding ${localDir} to the cache...`);
         const cachedDir = yield tc.cacheDir(localDir, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedDir}`);

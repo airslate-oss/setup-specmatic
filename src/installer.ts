@@ -13,36 +13,43 @@ export interface ISpecmaticVersionInfo {
   fileName: string
 }
 
+const getOs = (): string => {
+  switch (os.platform()) {
+    case 'win32':
+      return 'windows'
+    case 'darwin':
+      return 'macosx'
+    default:
+      return 'linux'
+  }
+}
+
+const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
+  const isWindows = getOs() === 'win32'
+  const tempDir = process.env.RUNNER_TEMP || '.'
+  return isWindows ? path.join(tempDir, info.fileName) : undefined
+}
+
+const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
+  return `${ROOT_PATH}-${info.resolvedVersion}-${getOs()}`
+}
+
 async function installSpecmaticVersion(
   info: ISpecmaticVersionInfo
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`)
 
-  const isWindows = os.platform() === 'win32'
-  const tempDir = process.env.RUNNER_TEMP || '.'
-  const fileName = isWindows ? path.join(tempDir, info.fileName) : undefined
-
-  const downloadPath = await tc.downloadTool(info.downloadUrl, fileName)
+  const downloadPath = await tc.downloadTool(
+    info.downloadUrl,
+    getFileName(info)
+  )
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  const localDir = `${ROOT_PATH}-${info.resolvedVersion}`
+  const localDir = getLocalDirname(info)
   const localPath = path.join(localDir, FILE_NAME)
 
   await extractSpecmatic(downloadPath, localPath)
   core.info(`Successfully extracted specmatic to ${localPath}`)
-
-  const shortcut = path.join(localDir, 'specmatic')
-
-  const stream = fs.createWriteStream(shortcut)
-  stream.once('open', () => {
-    stream.write('#!/bin/bash\n')
-    stream.write(`java -jar ${path.resolve(localDir)}\n`)
-    stream.end()
-  })
-  core.info(`Successfully created shortcut at ${shortcut}`)
-
-  await fs.promises.chmod(shortcut, '0755')
-  core.info(`Successfully change mode for shortcut to 0755`)
 
   core.info(`Adding ${localDir} to the cache...`)
   const cachedDir = await tc.cacheDir(
