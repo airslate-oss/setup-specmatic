@@ -31,12 +31,12 @@ async function installSpecmaticVersion(
   await extractSpecmatic(downloadPath, localPath)
   core.info(`Successfully extracted specmatic to ${localPath}`)
 
-  const shortcut = path.join(localPath, 'specmatic')
+  const shortcut = path.join(localDir, 'specmatic')
 
   const stream = fs.createWriteStream(shortcut)
   stream.once('open', () => {
     stream.write('#!/bin/bash\n')
-    stream.write(`java -jar ${path.resolve(localPath)}\n`)
+    stream.write(`java -jar ${path.resolve(localDir)}\n`)
     stream.end()
   })
   core.info(`Successfully created shortcut at ${shortcut}`)
