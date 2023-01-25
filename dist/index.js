@@ -42,7 +42,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseGoVersionFile = exports.getSpecmatic = void 0;
+exports.parseSpecmaticVersionFile = exports.getSpecmatic = void 0;
 const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
@@ -53,39 +53,43 @@ const getFileName = (info) => {
     const tempDir = process.env.RUNNER_TEMP || '.';
     return isWindows ? path.join(tempDir, info.fileName) : undefined;
 };
-const getLocalDirname = (info) => {
-    return `specmatic-${info.resolvedVersion}}`;
-};
+// const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
+//   return `specmatic-${info.resolvedVersion}}`
+// }
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl, getFileName(info));
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        const localDir = getLocalDirname(info);
-        const localPath = path.join(localDir, 'specmatic.jar');
-        yield extractSpecmatic(downloadPath, localPath);
-        core.info(`Successfully extracted specmatic to ${localPath}`);
-        core.info(`Adding ${localDir} to the cache...`);
-        const cachedPath = yield tc.cacheDir(localDir, 'specmatic', info.resolvedVersion, undefined);
+        // const localDir = getLocalDirname(info)
+        // const localPath = path.join(localDir, 'specmatic.jar')
+        // await extractSpecmatic(downloadPath, localPath)
+        // core.info(`Successfully extracted specmatic to ${localPath}`)
+        // core.info(`Adding ${localDir} to the cache...`)
+        core.info(`Adding ${downloadPath} to the cache...`);
+        const cachedPath = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedPath}`);
+        const jarPath = path.join(cachedPath, 'specmatic.jar');
+        const executablePath = path.join(cachedPath, 'specmatic');
+        fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
+        fs_1.default.chmodSync(executablePath, 0o555);
         return cachedPath;
     });
 }
-function extractSpecmatic(downloadPath, localPath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const localDir = path.dirname(localPath);
-        fs_1.default.promises.mkdir(localDir, { recursive: true });
-        fs_1.default.promises.rename(downloadPath, localPath);
-    });
-}
-function createExecutable(basePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const jarPath = path.join(basePath, 'specmatic.jar');
-        const executablePath = path.join(basePath, 'specmatic');
-        fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
-        fs_1.default.chmodSync(executablePath, 0o555);
-    });
-}
+// async function extractSpecmatic(
+//   downloadPath: string,
+//   localPath: string
+// ): Promise<void> {
+//   const localDir = path.dirname(localPath)
+//   fs.promises.mkdir(localDir, {recursive: true})
+//   fs.promises.rename(downloadPath, localPath)
+// }
+// async function createExecutable(basePath: string): Promise<void> {
+//   const jarPath = path.join(basePath, 'specmatic.jar')
+//   const executablePath = path.join(basePath, 'specmatic')
+//   fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
+//   fs.chmodSync(executablePath, 0o555)
+// }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
@@ -107,7 +111,7 @@ function getSpecmatic(versionSpec) {
         }
         try {
             downloadPath = yield installSpecmaticVersion(info);
-            createExecutable(downloadPath);
+            // createExecutable(downloadPath)
         }
         catch (err) {
             throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);
@@ -116,11 +120,11 @@ function getSpecmatic(versionSpec) {
     });
 }
 exports.getSpecmatic = getSpecmatic;
-function parseGoVersionFile(versionFilePath) {
+function parseSpecmaticVersionFile(versionFilePath) {
     const contents = fs_1.default.readFileSync(versionFilePath).toString();
     return contents.trim();
 }
-exports.parseGoVersionFile = parseGoVersionFile;
+exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
 
 
 /***/ }),
@@ -205,7 +209,7 @@ function resolveVersionInput() {
         if (!fs_1.default.existsSync(versionFilePath)) {
             throw new Error(`The specified specmatic version file at: ${versionFilePath} does not exist`);
         }
-        version = installer.parseGoVersionFile(versionFilePath);
+        version = installer.parseSpecmaticVersionFile(versionFilePath);
     }
     return version;
 }

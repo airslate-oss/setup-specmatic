@@ -42,7 +42,7 @@ function resolveVersionInput(): string {
         `The specified specmatic version file at: ${versionFilePath} does not exist`
       )
     }
-    version = installer.parseGoVersionFile(versionFilePath)
+    version = installer.parseSpecmaticVersionFile(versionFilePath)
   }
 
   return version
