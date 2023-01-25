@@ -48,16 +48,13 @@ const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-const TOOL_NAME = 'specmatic';
-const FILE_NAME = `${TOOL_NAME}.jar`;
-const ROOT_PATH = `${TOOL_NAME}`;
 const getFileName = (info) => {
     const isWindows = os_1.default.platform() === 'win32';
     const tempDir = process.env.RUNNER_TEMP || '.';
     return isWindows ? path.join(tempDir, info.fileName) : undefined;
 };
 const getLocalDirname = (info) => {
-    return `${ROOT_PATH}-${info.resolvedVersion}}`;
+    return `specmatic-${info.resolvedVersion}}`;
 };
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -65,7 +62,7 @@ function installSpecmaticVersion(info) {
         const downloadPath = yield tc.downloadTool(info.downloadUrl, getFileName(info));
         core.info(`Successfully download specmatic to ${downloadPath}`);
         const localDir = getLocalDirname(info);
-        const localPath = path.join(localDir, FILE_NAME);
+        const localPath = path.join(localDir, 'specmatic.jar');
         yield extractSpecmatic(downloadPath, localPath);
         core.info(`Successfully extracted specmatic to ${localPath}`);
         core.info(`Adding ${localDir} to the cache...`);
@@ -83,19 +80,19 @@ function extractSpecmatic(downloadPath, localPath) {
 }
 function createExecutable(basePath) {
     return __awaiter(this, void 0, void 0, function* () {
-        const jarPath = path.join(basePath, FILE_NAME);
-        const executablePath = path.join(basePath, TOOL_NAME);
+        const jarPath = path.join(basePath, 'specmatic.jar');
+        const executablePath = path.join(basePath, 'specmatic');
         fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
         fs_1.default.chmodSync(executablePath, 0o555);
     });
 }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`;
+        const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
         return {
             downloadUrl,
             resolvedVersion: versionSpec,
-            fileName: FILE_NAME
+            fileName: 'specmatic.jar'
         };
     });
 }

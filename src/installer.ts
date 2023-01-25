@@ -4,10 +4,6 @@ import * as path from 'path'
 import fs from 'fs'
 import os from 'os'
 
-const TOOL_NAME = 'specmatic'
-const FILE_NAME = `${TOOL_NAME}.jar`
-const ROOT_PATH = `${TOOL_NAME}`
-
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
   resolvedVersion: string
@@ -21,7 +17,7 @@ const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
 }
 
 const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
-  return `${ROOT_PATH}-${info.resolvedVersion}}`
+  return `specmatic-${info.resolvedVersion}}`
 }
 
 async function installSpecmaticVersion(
@@ -36,7 +32,7 @@ async function installSpecmaticVersion(
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
   const localDir = getLocalDirname(info)
-  const localPath = path.join(localDir, FILE_NAME)
+  const localPath = path.join(localDir, 'specmatic.jar')
 
   await extractSpecmatic(downloadPath, localPath)
   core.info(`Successfully extracted specmatic to ${localPath}`)
@@ -63,8 +59,8 @@ async function extractSpecmatic(
 }
 
 async function createExecutable(basePath: string): Promise<void> {
-  const jarPath = path.join(basePath, FILE_NAME)
-  const executablePath = path.join(basePath, TOOL_NAME)
+  const jarPath = path.join(basePath, 'specmatic.jar')
+  const executablePath = path.join(basePath, 'specmatic')
 
   fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
   fs.chmodSync(executablePath, 0o555)
@@ -73,12 +69,12 @@ async function createExecutable(basePath: string): Promise<void> {
 async function getInfoFromDist(
   versionSpec: string
 ): Promise<ISpecmaticVersionInfo | null> {
-  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`
+  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`
 
   return {
     downloadUrl,
     resolvedVersion: versionSpec,
-    fileName: FILE_NAME
+    fileName: 'specmatic.jar'
   } as ISpecmaticVersionInfo
 }
 
