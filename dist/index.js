@@ -47,19 +47,22 @@ const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-const os_1 = __importDefault(__nccwpck_require__(2037));
-const getFileName = (info) => {
-    const isWindows = os_1.default.platform() === 'win32';
-    const tempDir = process.env.RUNNER_TEMP || '.';
-    return isWindows ? path.join(tempDir, info.fileName) : undefined;
-};
+// const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
+//   const isWindows = os.platform() === 'win32'
+//   const tempDir = process.env.RUNNER_TEMP || '.'
+//   return isWindows ? path.join(tempDir, info.fileName) : undefined
+// }
 // const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
 //   return `specmatic-${info.resolvedVersion}}`
 // }
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
-        const downloadPath = yield tc.downloadTool(info.downloadUrl, getFileName(info));
+        // const downloadPath = await tc.downloadTool(
+        //   info.downloadUrl,
+        //   getFileName(info)
+        // )
+        const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
         // const localDir = getLocalDirname(info)
         // const localPath = path.join(localDir, 'specmatic.jar')

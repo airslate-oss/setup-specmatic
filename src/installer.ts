@@ -2,7 +2,7 @@ import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
 import * as path from 'path'
 import fs from 'fs'
-import os from 'os'
+// import os from 'os'
 
 export interface ISpecmaticVersionInfo {
   downloadUrl: string
@@ -10,11 +10,11 @@ export interface ISpecmaticVersionInfo {
   fileName: string
 }
 
-const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
-  const isWindows = os.platform() === 'win32'
-  const tempDir = process.env.RUNNER_TEMP || '.'
-  return isWindows ? path.join(tempDir, info.fileName) : undefined
-}
+// const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
+//   const isWindows = os.platform() === 'win32'
+//   const tempDir = process.env.RUNNER_TEMP || '.'
+//   return isWindows ? path.join(tempDir, info.fileName) : undefined
+// }
 
 // const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
 //   return `specmatic-${info.resolvedVersion}}`
@@ -25,10 +25,11 @@ async function installSpecmaticVersion(
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`)
 
-  const downloadPath = await tc.downloadTool(
-    info.downloadUrl,
-    getFileName(info)
-  )
+  // const downloadPath = await tc.downloadTool(
+  //   info.downloadUrl,
+  //   getFileName(info)
+  // )
+  const downloadPath = await tc.downloadTool(info.downloadUrl)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
   // const localDir = getLocalDirname(info)
