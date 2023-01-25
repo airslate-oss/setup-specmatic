@@ -50,47 +50,45 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
 exports.TOOL_NAME = 'specmatic';
 const FILE_NAME = `${exports.TOOL_NAME}.jar`;
+const ROOT_PATH = `${exports.TOOL_NAME}`;
 const getFileName = (info) => {
     const isWindows = os_1.default.platform() === 'win32';
     const tempDir = process.env.RUNNER_TEMP || '.';
     return isWindows ? path.join(tempDir, info.fileName) : undefined;
 };
-// const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
-//   return `${ROOT_PATH}-${info.resolvedVersion}}`
-// }
+const getLocalDirname = (info) => {
+    return `${ROOT_PATH}-${info.resolvedVersion}}`;
+};
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl, getFileName(info));
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        // const localDir = getLocalDirname(info)
-        // const localPath = path.join(localDir, FILE_NAME)
-        // await extractSpecmatic(downloadPath, localPath)
-        // core.info(`Successfully extracted specmatic to ${localPath}`)
-        core.info(`Adding ${downloadPath} to the cache...`);
-        const cachedDir = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
-        core.info(`Successfully cached specmatic to ${cachedDir}`);
-        const jarPath = path.join(cachedDir, FILE_NAME);
-        const executablePath = path.join(cachedDir, exports.TOOL_NAME);
-        fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
-        fs_1.default.chmodSync(executablePath, 0o555);
-        return cachedDir;
+        const localDir = getLocalDirname(info);
+        const localPath = path.join(localDir, FILE_NAME);
+        yield extractSpecmatic(downloadPath, localPath);
+        core.info(`Successfully extracted specmatic to ${localPath}`);
+        core.info(`Adding ${localDir} to the cache...`);
+        const cachedPath = yield tc.cacheDir(localDir, 'specmatic', info.resolvedVersion, undefined);
+        core.info(`Successfully cached specmatic to ${cachedPath}`);
+        return cachedPath;
     });
 }
-// async function extractSpecmatic(
-//   downloadPath: string,
-//   localPath: string
-// ): Promise<void> {
-//   const localDir = path.dirname(localPath)
-//   fs.promises.mkdir(localDir, {recursive: true})
-//   fs.promises.rename(downloadPath, localPath)
-// }
-// async function createExecutable(basePath: string): Promise<void> {
-//   const jarPath = path.join(basePath, FILE_NAME)
-//   const executablePath = path.join(basePath, TOOL_NAME)
-//   fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
-//   fs.chmodSync(executablePath, 0o555)
-// }
+function extractSpecmatic(downloadPath, localPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const localDir = path.dirname(localPath);
+        fs_1.default.promises.mkdir(localDir, { recursive: true });
+        fs_1.default.promises.rename(downloadPath, localPath);
+    });
+}
+function createExecutable(basePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const jarPath = path.join(basePath, FILE_NAME);
+        const executablePath = path.join(basePath, exports.TOOL_NAME);
+        fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
+        fs_1.default.chmodSync(executablePath, 0o555);
+    });
+}
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/${FILE_NAME}`;
@@ -111,8 +109,8 @@ function getSpecmatic(versionSpec) {
             throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
         }
         try {
-            core.info('Install from dist');
             downloadPath = yield installSpecmaticVersion(info);
+            createExecutable(downloadPath);
         }
         catch (err) {
             throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);
