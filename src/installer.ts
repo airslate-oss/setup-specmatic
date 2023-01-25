@@ -26,15 +26,17 @@ async function installSpecmaticVersion(
   )
   core.info(`Successfully cached specmatic to ${cachedPath}`)
 
+  return cachedPath
+}
+
+function createExecutable(basePath: string): void {
   core.info('Creating executable...')
-  const jarPath = path.join(cachedPath, 'specmatic.jar')
-  const executablePath = path.join(cachedPath, 'specmatic')
+  const jarPath = path.join(basePath, 'specmatic.jar')
+  const executablePath = path.join(basePath, 'specmatic')
 
   fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
   fs.chmodSync(executablePath, 0o555)
   core.info(`Successfully created executable at ${executablePath}`)
-
-  return cachedPath
 }
 
 async function getInfoFromDist(
@@ -62,6 +64,7 @@ export async function getSpecmatic(versionSpec: string): Promise<string> {
 
   try {
     downloadPath = await installSpecmaticVersion(info)
+    createExecutable(downloadPath)
   } catch (err) {
     throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`)
   }
