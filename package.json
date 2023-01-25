@@ -1,6 +1,6 @@
 {
   "name": "setup-specmatic",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "private": true,
   "description": "Setup specmatic action",
   "main": "lib/setup-specmatic.js",

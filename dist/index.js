@@ -47,58 +47,23 @@ const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-// const getFileName = (info: ISpecmaticVersionInfo): string | undefined => {
-//   const isWindows = os.platform() === 'win32'
-//   const tempDir = process.env.RUNNER_TEMP || '.'
-//   return isWindows ? path.join(tempDir, info.fileName) : undefined
-// }
-// const getLocalDirname = (info: ISpecmaticVersionInfo): string => {
-//   return `specmatic-${info.resolvedVersion}}`
-// }
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
-        // const downloadPath = await tc.downloadTool(
-        //   info.downloadUrl,
-        //   getFileName(info)
-        // )
+        core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        for (const file of downloadPath) {
-            core.info(file);
-        }
-        for (const file of path.basename(downloadPath)) {
-            core.info(file);
-        }
-        // const localDir = getLocalDirname(info)
-        // const localPath = path.join(localDir, 'specmatic.jar')
-        // await extractSpecmatic(downloadPath, localPath)
-        // core.info(`Successfully extracted specmatic to ${localPath}`)
-        // core.info(`Adding ${localDir} to the cache...`)
         core.info(`Adding ${downloadPath} to the cache...`);
         const cachedPath = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedPath}`);
+        core.info('Creating executable...');
         const jarPath = path.join(cachedPath, 'specmatic.jar');
         const executablePath = path.join(cachedPath, 'specmatic');
         fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
         fs_1.default.chmodSync(executablePath, 0o555);
+        core.info(`Successfully created executable at ${executablePath}`);
         return cachedPath;
     });
 }
-// async function extractSpecmatic(
-//   downloadPath: string,
-//   localPath: string
-// ): Promise<void> {
-//   const localDir = path.dirname(localPath)
-//   fs.promises.mkdir(localDir, {recursive: true})
-//   fs.promises.rename(downloadPath, localPath)
-// }
-// async function createExecutable(basePath: string): Promise<void> {
-//   const jarPath = path.join(basePath, 'specmatic.jar')
-//   const executablePath = path.join(basePath, 'specmatic')
-//   fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
-//   fs.chmodSync(executablePath, 0o555)
-// }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
@@ -120,7 +85,6 @@ function getSpecmatic(versionSpec) {
         }
         try {
             downloadPath = yield installSpecmaticVersion(info);
-            // createExecutable(downloadPath)
         }
         catch (err) {
             throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);
