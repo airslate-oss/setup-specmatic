@@ -52,6 +52,9 @@ function installSpecmaticVersion(info) {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
+        if (!fs_1.default.lstatSync(downloadPath).isDirectory()) {
+            throw Error('Unable to create temporary directory to download specmatic');
+        }
         core.info(`Adding ${downloadPath} to the cache...`);
         const cachedPath = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedPath}`);

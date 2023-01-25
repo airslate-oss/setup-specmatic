@@ -17,6 +17,10 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
+  if (!fs.lstatSync(downloadPath).isDirectory()) {
+    throw Error('Unable to create temporary directory to download specmatic')
+  }
+
   core.info(`Adding ${downloadPath} to the cache...`)
   const cachedPath = await tc.cacheDir(
     downloadPath,
