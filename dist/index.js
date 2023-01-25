@@ -42,15 +42,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.parseGoVersionFile = exports.getSpecmatic = exports.TOOL_NAME = void 0;
+exports.parseGoVersionFile = exports.getSpecmatic = void 0;
 const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-exports.TOOL_NAME = 'specmatic';
-const FILE_NAME = `${exports.TOOL_NAME}.jar`;
-const ROOT_PATH = `${exports.TOOL_NAME}`;
+const TOOL_NAME = 'specmatic';
+const FILE_NAME = `${TOOL_NAME}.jar`;
+const ROOT_PATH = `${TOOL_NAME}`;
 const getFileName = (info) => {
     const isWindows = os_1.default.platform() === 'win32';
     const tempDir = process.env.RUNNER_TEMP || '.';
@@ -84,7 +84,7 @@ function extractSpecmatic(downloadPath, localPath) {
 function createExecutable(basePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const jarPath = path.join(basePath, FILE_NAME);
-        const executablePath = path.join(basePath, exports.TOOL_NAME);
+        const executablePath = path.join(basePath, TOOL_NAME);
         fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
         fs_1.default.chmodSync(executablePath, 0o555);
     });
@@ -172,7 +172,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const installer = __importStar(__nccwpck_require__(1480));
-const path_1 = __importDefault(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -185,7 +184,7 @@ function run() {
             core.info(`Setup specmatic version spec ${versionSpec}`);
             if (versionSpec) {
                 const installDir = yield installer.getSpecmatic(versionSpec);
-                core.addPath(path_1.default.join(installDir, installer.TOOL_NAME));
+                core.addPath(installDir);
                 core.info('Added specmatic to the path');
             }
         }

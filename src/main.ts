@@ -1,6 +1,5 @@
 import * as core from '@actions/core'
 import * as installer from './installer'
-import path from 'path'
 import fs from 'fs'
 
 export async function run(): Promise<void> {
@@ -15,7 +14,7 @@ export async function run(): Promise<void> {
     if (versionSpec) {
       const installDir = await installer.getSpecmatic(versionSpec)
 
-      core.addPath(path.join(installDir, installer.TOOL_NAME))
+      core.addPath(installDir)
       core.info('Added specmatic to the path')
     }
   } catch (error) {

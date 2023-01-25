@@ -4,8 +4,7 @@ import * as path from 'path'
 import fs from 'fs'
 import os from 'os'
 
-export const TOOL_NAME = 'specmatic'
-
+const TOOL_NAME = 'specmatic'
 const FILE_NAME = `${TOOL_NAME}.jar`
 const ROOT_PATH = `${TOOL_NAME}`
 
