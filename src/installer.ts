@@ -32,6 +32,14 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
+  for (const file of downloadPath) {
+    core.info(file)
+  }
+
+  for (const file of path.basename(downloadPath)) {
+    core.info(file)
+  }
+
   // const localDir = getLocalDirname(info)
   // const localPath = path.join(localDir, 'specmatic.jar')
 
