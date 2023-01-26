@@ -7,6 +7,8 @@ export interface ISpecmaticVersionInfo {
   downloadUrl: string
   resolvedVersion: string
   fileName: string
+  installPath: string
+  name: string
 }
 
 async function installSpecmaticVersion(
@@ -20,23 +22,31 @@ async function installSpecmaticVersion(
   core.info(`Adding ${downloadPath} to the cache...`)
   const cachedPath = await tc.cacheFile(
     downloadPath,
-    'specmatic.jar',
-    'specmatic',
+    info.fileName,
+    info.name,
     info.resolvedVersion
   )
   core.info(`Successfully cached specmatic to ${cachedPath}`)
+  info.installPath = cachedPath
+
+  await writeJarScript(info)
 
   return cachedPath
 }
 
-function createExecutable(basePath: string): void {
+async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
   core.info('Creating executable...')
-  const jarPath = path.join(basePath, 'specmatic.jar')
-  const executablePath = path.join(basePath, 'specmatic')
 
-  fs.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`)
-  fs.chmodSync(executablePath, 0o555)
-  core.info(`Successfully created executable at ${executablePath}`)
+  const script = `#!/usr/bin/env bash
+  exec -a ${tool.name} java -jar ${path.join(
+    tool.installPath,
+    tool.fileName
+  )} "$@"`
+
+  const scriptPath = path.join(tool.installPath, tool.name)
+  await fs.promises.writeFile(scriptPath, script, {mode: 0o555})
+
+  core.info(`Successfully created executable at ${scriptPath}`)
 }
 
 async function getInfoFromDist(
@@ -47,7 +57,9 @@ async function getInfoFromDist(
   return {
     downloadUrl,
     resolvedVersion: versionSpec,
-    fileName: 'specmatic.jar'
+    fileName: 'specmatic.jar',
+    installPath: '',
+    name: 'specmatic'
   } as ISpecmaticVersionInfo
 }
 
@@ -64,7 +76,6 @@ export async function getSpecmatic(versionSpec: string): Promise<string> {
 
   try {
     downloadPath = await installSpecmaticVersion(info)
-    createExecutable(downloadPath)
   } catch (err) {
     throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`)
   }

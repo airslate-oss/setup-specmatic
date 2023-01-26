@@ -53,18 +53,22 @@ function installSpecmaticVersion(info) {
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
         core.info(`Adding ${downloadPath} to the cache...`);
-        const cachedPath = yield tc.cacheFile(downloadPath, 'specmatic.jar', 'specmatic', info.resolvedVersion);
+        const cachedPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, info.resolvedVersion);
         core.info(`Successfully cached specmatic to ${cachedPath}`);
+        info.installPath = cachedPath;
+        yield writeJarScript(info);
         return cachedPath;
     });
 }
-function createExecutable(basePath) {
-    core.info('Creating executable...');
-    const jarPath = path.join(basePath, 'specmatic.jar');
-    const executablePath = path.join(basePath, 'specmatic');
-    fs_1.default.writeFileSync(executablePath, `#!/bin/sh\nexec java -jar ${jarPath} "$@"`);
-    fs_1.default.chmodSync(executablePath, 0o555);
-    core.info(`Successfully created executable at ${executablePath}`);
+function writeJarScript(tool) {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.info('Creating executable...');
+        const script = `#!/usr/bin/env bash
+  exec -a ${tool.name} java -jar ${path.join(tool.installPath, tool.fileName)} "$@"`;
+        const scriptPath = path.join(tool.installPath, tool.name);
+        yield fs_1.default.promises.writeFile(scriptPath, script, { mode: 0o555 });
+        core.info(`Successfully created executable at ${scriptPath}`);
+    });
 }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -72,7 +76,9 @@ function getInfoFromDist(versionSpec) {
         return {
             downloadUrl,
             resolvedVersion: versionSpec,
-            fileName: 'specmatic.jar'
+            fileName: 'specmatic.jar',
+            installPath: '',
+            name: 'specmatic'
         };
     });
 }
@@ -87,7 +93,6 @@ function getSpecmatic(versionSpec) {
         }
         try {
             downloadPath = yield installSpecmaticVersion(info);
-            createExecutable(downloadPath);
         }
         catch (err) {
             throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);
