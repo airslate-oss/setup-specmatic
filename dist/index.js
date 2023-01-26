@@ -50,12 +50,8 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 function installSpecmaticVersion(info) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
-        const tmpDir = path.join(process.env.RUNNER_TEMP || '.', 'specmatic');
-        const downloadPath = yield tc.downloadTool(info.downloadUrl, tmpDir);
+        const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        if (!fs_1.default.lstatSync(downloadPath).isDirectory()) {
-            throw Error('Unable to create temporary directory to download specmatic');
-        }
         core.info(`Adding ${downloadPath} to the cache...`);
         const cachedPath = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
         core.info(`Successfully cached specmatic to ${cachedPath}`);
