@@ -1,6 +1,6 @@
 {
   "name": "setup-specmatic",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "private": true,
   "description": "Setup specmatic action",
   "main": "lib/setup-specmatic.js",
@@ -19,7 +19,7 @@
   },
   "keywords": [
     "actions",
-    "node",
+    "specmatic",
     "setup"
   ],
   "author": "",
