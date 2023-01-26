@@ -14,7 +14,11 @@ async function installSpecmaticVersion(
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`)
 
-  const downloadPath = await tc.downloadTool(info.downloadUrl)
+  const tmpDir = await fs.promises.mkdtemp(
+    path.join(process.env.RUNNER_TEMP || '.', 'specmatic')
+  )
+
+  const downloadPath = await tc.downloadTool(info.downloadUrl, tmpDir)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
   if (!fs.lstatSync(downloadPath).isDirectory()) {
