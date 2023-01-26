@@ -53,7 +53,7 @@ function installSpecmaticVersion(info) {
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
         core.info(`Adding ${downloadPath} to the cache...`);
-        const cachedPath = yield tc.cacheDir(downloadPath, 'specmatic', info.resolvedVersion, undefined);
+        const cachedPath = yield tc.cacheFile(downloadPath, 'specmatic.jar', 'specmatic', info.resolvedVersion);
         core.info(`Successfully cached specmatic to ${cachedPath}`);
         return cachedPath;
     });

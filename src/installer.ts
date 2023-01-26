@@ -18,11 +18,11 @@ async function installSpecmaticVersion(
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
   core.info(`Adding ${downloadPath} to the cache...`)
-  const cachedPath = await tc.cacheDir(
+  const cachedPath = await tc.cacheFile(
     downloadPath,
+    'specmatic.jar',
     'specmatic',
-    info.resolvedVersion,
-    undefined
+    info.resolvedVersion
   )
   core.info(`Successfully cached specmatic to ${cachedPath}`)
 
