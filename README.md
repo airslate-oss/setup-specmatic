@@ -29,6 +29,45 @@ it will pull it from [specmatic releases](https://github.com/znsio/specmatic/rel
 **Note:** The `setup-specmatic` action uses packages which are built by specmatic side.
 The action does not build golang from source code.
 
+## Usage
+
+See [action.yml](https://github.com/airslate-oss/setup-specmatic/blob/main/action.yml)
+
+### Basic
+
+```yaml
+steps:
+  - uses: actions/checkout@v3
+  - uses: actions/setup-specmatic@v0.1.0
+    with:
+      specmatic-version: 0.59.0 # The Specmatic version to download (if necessary) and use.
+  - run: specmatic test --testBaseURL="http://127.0.0.1:8030"
+```
+
+### Matrix testing
+
+```yaml
+jobs:
+  build:
+    name: Run contract tests using Specmatic ${{ matrix.specmatic }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        specmatic: [ 0.40.0, 0.59.0 ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup specmatic
+        uses: actions/setup-specmatic@v0.1.0
+        with:
+          specmatic-version: ${{ matrix.specmatic }}
+
+      - run: specmatic test --testBaseURL="http://127.0.0.1:8030"
+```
+
 ## Project Information
 
 `setup-specmatic` is released under the [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/),
