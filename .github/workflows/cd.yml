@@ -20,10 +20,12 @@ on:
 
 jobs:
   check-dist:
+    name: Check CD
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set Node.js 16.x
         uses: actions/setup-node@v3.6.0

@@ -38,10 +38,10 @@ See [action.yml](https://github.com/airslate-oss/setup-specmatic/blob/main/actio
 ```yaml
 steps:
   - uses: actions/checkout@v3
-  - uses: actions/setup-specmatic@v0.1.0
+  - uses: actions/setup-specmatic@v1
     with:
       specmatic-version: 0.59.0 # The Specmatic version to download (if necessary) and use.
-  - run: specmatic test --testBaseURL="http://127.0.0.1:8030"
+  - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
 ### Matrix testing
@@ -61,11 +61,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup specmatic
-        uses: actions/setup-specmatic@v0.1.0
+        uses: actions/setup-specmatic@v1
         with:
           specmatic-version: ${{ matrix.specmatic }}
 
-      - run: specmatic test --testBaseURL="http://127.0.0.1:8030"
+      - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
 ## Project Information

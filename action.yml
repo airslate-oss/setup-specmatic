@@ -1,17 +1,17 @@
-name: 'Setup specmatic environment'
-description: 'Setup a specmatic environment and add it to the PATH'
-author: 'airSlate, Inc.'
+name: Setup specmatic environment
+description: Setup a specmatic environment and add it to the PATH.
+author: airSlate, Inc.
 
 inputs:
   specmatic-version:
-    description: 'The specmatic version to download (if necessary) and use.'
+    description: The specmatic version to download (if necessary) and use.
 outputs:
   specmatic-version:
-    description: 'The installed specmatic version. Useful when given a version range as input.'
+    description: The installed specmatic version. Useful when given a version range as input.
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node16
+  main: dist/index.js
 
 branding:
   icon: check-square
