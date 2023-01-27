@@ -54,13 +54,13 @@ const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-function installSpecmaticVersion(info) {
+function installSpecmaticVersion(info, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
         core.info(`Adding ${downloadPath} to the cache...`);
-        info.installPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, info.resolvedVersion);
+        info.installPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, info.resolvedVersion, arch);
         core.info(`Successfully cached specmatic to ${info.installPath}`);
         yield writeJarScript(info);
         return info.installPath;
@@ -84,6 +84,7 @@ exec -a ${tool.name} java -jar "${path.join(tool.installPath, tool.fileName)}" "
 }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
+        // TODO: https://api.github.com/repos/znsio/specmatic/releases/latest
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
         return {
             downloadUrl,
@@ -111,7 +112,7 @@ function getSpecmatic(versionSpec, arch = os_1.default.arch()) {
             throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
         }
         try {
-            downloadPath = yield installSpecmaticVersion(info);
+            downloadPath = yield installSpecmaticVersion(info, arch);
         }
         catch (err) {
             throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);

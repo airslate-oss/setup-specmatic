@@ -20,7 +20,8 @@ export interface ISpecmaticVersionInfo {
 }
 
 async function installSpecmaticVersion(
-  info: ISpecmaticVersionInfo
+  info: ISpecmaticVersionInfo,
+  arch: string
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`)
 
@@ -32,7 +33,8 @@ async function installSpecmaticVersion(
     downloadPath,
     info.fileName,
     info.name,
-    info.resolvedVersion
+    info.resolvedVersion,
+    arch
   )
   core.info(`Successfully cached specmatic to ${info.installPath}`)
 
@@ -65,6 +67,7 @@ exec -a ${tool.name} java -jar "${path.join(
 async function getInfoFromDist(
   versionSpec: string
 ): Promise<ISpecmaticVersionInfo | null> {
+  // TODO: https://api.github.com/repos/znsio/specmatic/releases/latest
   const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`
 
   return {
@@ -100,7 +103,7 @@ export async function getSpecmatic(
   }
 
   try {
-    downloadPath = await installSpecmaticVersion(info)
+    downloadPath = await installSpecmaticVersion(info, arch)
   } catch (err) {
     throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`)
   }
