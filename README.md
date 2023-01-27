@@ -11,9 +11,8 @@
   </a>
 </p>
 
-`setup-specmatic` is an action to set up a [Specmatic](https://specmatic.in) environment for use in actions by:
-
-- Optionally downloading and caching a version of specmatic by version and adding to `PATH`.
+`setup-specmatic` is an action to set up a [Specmatic](https://specmatic.in) environment for use in actions by
+optionally downloading and caching a version of specmatic by version and adding to `PATH`.
 
 ## Features
 
@@ -27,7 +26,7 @@ The action will first check the local cache for a version match.  If a version i
 it will pull it from [specmatic releases](https://github.com/znsio/specmatic/releases).
 
 **Note:** The `setup-specmatic` action uses packages which are built by specmatic side.
-The action does not build golang from source code.
+The action does not build JAR files from source code.
 
 ## Usage
 
@@ -71,8 +70,8 @@ jobs:
 ## Project Information
 
 `setup-specmatic` is released under the [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/),
-the code lives on [GitHub](https://github.com/airslate-oss/python-airslate), and the latest release on GitHub Releases.
-It’s rigorously tested on Node.js 16+.
+the code lives on [GitHub](https://github.com/airslate-oss/python-airslate), and the latest release on
+[GitHub Releases](https://github.com/airslate-oss/setup-specmatic/releases). It’s rigorously tested on Node.js 16+.
 
 If you'd like to contribute to `setup-specmatic` you're most welcome!
 
