@@ -195,7 +195,14 @@ export async function getManifest(
   auth: string | undefined
 ): Promise<tc.IToolRelease[]> {
   core.debug('Download manifest from @airslate-oss/setup-specmatic')
-  return tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main')
+  const manifest = tc.getManifestFromRepo(
+    'airslate-oss',
+    'setup-specmatic',
+    auth,
+    'main'
+  )
+
+  return manifest
 }
 
 async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {

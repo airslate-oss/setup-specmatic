@@ -157,7 +157,8 @@ exports.getInfoFromManifest = getInfoFromManifest;
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('Download manifest from @airslate-oss/setup-specmatic');
-        return tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main');
+        const manifest = tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main');
+        return manifest;
     });
 }
 exports.getManifest = getManifest;
