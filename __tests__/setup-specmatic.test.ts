@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
+import fs from 'fs'
 import cp from 'child_process'
 import osm from 'os'
 import path from 'path'
@@ -26,6 +27,7 @@ describe('setup-specmatic', () => {
   let dlSpy: jest.SpyInstance
   let cacheSpy: jest.SpyInstance
   let execSpy: jest.SpyInstance
+  let writeFileSpy: jest.SpyInstance
 
   beforeAll(async () => {
     // Stub out Environment file functionality so we can verify it writes
@@ -65,7 +67,10 @@ describe('setup-specmatic', () => {
     // @actions/tool-cache
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
-    cacheSpy = jest.spyOn(tc, 'cacheDir')
+    cacheSpy = jest.spyOn(tc, 'cacheFile')
+
+    // io
+    writeFileSpy = jest.spyOn(fs.promises, 'writeFile')
 
     // writes
     cnSpy = jest.spyOn(process.stdout, 'write')
@@ -188,5 +193,22 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(cnSpy).toHaveBeenCalledWith('::error::' + errMsg + osm.EOL)
+  })
+
+  it('downloads a version not in the cache', async () => {
+    os.platform = 'linux'
+    os.arch = 'x64'
+
+    inputs['specmatic-version'] = '0.39.1'
+
+    findSpy.mockImplementation(() => '')
+    dlSpy.mockImplementation(() => '/some/temp/path')
+    let toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
+    cacheSpy.mockImplementation(() => toolPath)
+    writeFileSpy.mockImplementation()
+    await main.run()
+
+    expect(dlSpy).toHaveBeenCalled()
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
 })
