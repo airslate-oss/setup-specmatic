@@ -45,7 +45,10 @@ export async function getSpecmatic(
   const osPlat: string = os.platform()
   let manifest: tc.IToolRelease[] | undefined
 
-  if (versionSpec === StableReleaseAlias.Stable) {
+  if (
+    versionSpec === StableReleaseAlias.Stable ||
+    versionSpec === StableReleaseAlias.OldStable
+  ) {
     manifest = await getManifest(auth)
     const stableVersion = await resolveStableVersionInput(
       versionSpec,

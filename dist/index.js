@@ -60,7 +60,8 @@ function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()
     return __awaiter(this, void 0, void 0, function* () {
         const osPlat = os_1.default.platform();
         let manifest;
-        if (versionSpec === utils_1.StableReleaseAlias.Stable) {
+        if (versionSpec === utils_1.StableReleaseAlias.Stable ||
+            versionSpec === utils_1.StableReleaseAlias.OldStable) {
             manifest = yield getManifest(auth);
             const stableVersion = yield resolveStableVersionInput(versionSpec, arch, osPlat, manifest);
             if (!stableVersion) {
@@ -334,6 +335,7 @@ exports.StableReleaseAlias = void 0;
 var StableReleaseAlias;
 (function (StableReleaseAlias) {
     StableReleaseAlias["Stable"] = "stable";
+    StableReleaseAlias["OldStable"] = "oldstable";
 })(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
 
 

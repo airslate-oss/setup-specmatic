@@ -6,5 +6,6 @@
 // the LICENSE file that was distributed with this source code.
 
 export enum StableReleaseAlias {
-  Stable = 'stable'
+  Stable = 'stable',
+  OldStable = 'oldstable'
 }
