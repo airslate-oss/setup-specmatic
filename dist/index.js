@@ -96,10 +96,11 @@ function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()
             throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
         }
         try {
+            core.info('Install from dist');
             downloadPath = yield installSpecmaticVersion(info, arch);
         }
         catch (err) {
-            throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`);
+            throw new Error(`Failed to download version ${versionSpec}: ${err}`);
         }
         return downloadPath;
     });

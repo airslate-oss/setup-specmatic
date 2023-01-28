@@ -105,9 +105,10 @@ export async function getSpecmatic(
   }
 
   try {
+    core.info('Install from dist')
     downloadPath = await installSpecmaticVersion(info, arch)
   } catch (err) {
-    throw new Error(`Failed to install specmatic v${versionSpec}: ${err}`)
+    throw new Error(`Failed to download version ${versionSpec}: ${err}`)
   }
 
   return downloadPath

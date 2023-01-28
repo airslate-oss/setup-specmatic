@@ -17,11 +17,14 @@ describe('setup-specmatic', () => {
   let getBooleanInputSpy: jest.SpyInstance
   let exportVarSpy: jest.SpyInstance
   let findSpy: jest.SpyInstance
+  let cnSpy: jest.SpyInstance
   let logSpy: jest.SpyInstance
   let dbgSpy: jest.SpyInstance
   let platSpy: jest.SpyInstance
   let archSpy: jest.SpyInstance
   let joinSpy: jest.SpyInstance
+  let dlSpy: jest.SpyInstance
+  let cacheSpy: jest.SpyInstance
   let execSpy: jest.SpyInstance
 
   beforeAll(async () => {
@@ -61,10 +64,25 @@ describe('setup-specmatic', () => {
 
     // @actions/tool-cache
     findSpy = jest.spyOn(tc, 'find')
+    dlSpy = jest.spyOn(tc, 'downloadTool')
+    cacheSpy = jest.spyOn(tc, 'cacheDir')
 
     // writes
+    cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
+    cnSpy.mockImplementation(line => {
+      // uncomment to debug
+      // process.stderr.write('write:' + line + '\n');
+    })
+    logSpy.mockImplementation(line => {
+      // uncomment to debug
+      //process.stderr.write('log:' + line + '\n');
+    })
+    dbgSpy.mockImplementation(msg => {
+      // uncomment to see debug output
+      // process.stderr.write(msg + '\n');
+    })
   })
 
   afterAll(async () => {
@@ -138,5 +156,37 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(logSpy).toHaveBeenCalledWith(`Setup specmatic version spec 0.58.0`)
+  })
+
+  it('finds a version of go already in the cache', async () => {
+    inputs['specmatic-version'] = '0.59.0'
+
+    let toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
+    findSpy.mockImplementation(() => toolPath)
+    await main.run()
+
+    expect(logSpy).toHaveBeenCalledWith(`Found in cache: ${toolPath}`)
+  })
+
+  it('finds a version in the cache and adds it to the path', async () => {
+    inputs['specmatic-version'] = '0.59.0'
+
+    let toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
+    findSpy.mockImplementation(() => toolPath)
+    await main.run()
+
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  it('handles unhandled error and reports error', async () => {
+    inputs['specmatic-version'] = '0.59.0'
+    const errMsg = 'unhandled error message'
+
+    findSpy.mockImplementation(() => {
+      throw new Error(errMsg)
+    })
+    await main.run()
+
+    expect(cnSpy).toHaveBeenCalledWith('::error::' + errMsg + osm.EOL)
   })
 })
