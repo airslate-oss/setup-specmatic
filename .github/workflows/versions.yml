@@ -1,4 +1,4 @@
-name: Validate 'setup-specmatic'
+name: Validate Action
 
 on:
   push:
