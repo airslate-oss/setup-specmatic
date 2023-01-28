@@ -256,6 +256,7 @@ export async function resolveStableVersionInput(
     })
     .filter(item => !!item && !semver.prerelease(item))
 
+  core.debug(`resolved releases: ${JSON.stringify(releases)}`)
   if (versionSpec === StableReleaseAlias.Stable) {
     return releases[0]
   } else {

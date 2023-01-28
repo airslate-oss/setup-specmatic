@@ -205,6 +205,7 @@ function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
             return index === -1 ? '' : item.version;
         })
             .filter(item => !!item && !semver.prerelease(item));
+        core.debug(`resolved releases: ${JSON.stringify(releases)}`);
         if (versionSpec === utils_1.StableReleaseAlias.Stable) {
             return releases[0];
         }
