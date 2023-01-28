@@ -35,6 +35,8 @@ export async function run(): Promise<void> {
 
       core.addPath(installDir)
       core.info('Added specmatic to the path')
+
+      core.info(`Successfully set up Specmatic version ${versionSpec}`)
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)

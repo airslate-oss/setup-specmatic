@@ -95,20 +95,52 @@ export async function getSpecmatic(
   }
 
   core.info(`Attempting to download ${versionSpec}...`)
-
   let downloadPath = ''
   let info: ISpecmaticVersionInfo | null = null
 
-  info = await getInfoFromDist(versionSpec)
-  if (!info) {
-    throw new Error(`Unable to find Specmatic version '${versionSpec}'.`)
+  //
+  // Try download using manifest file
+  //
+  try {
+    info = await getInfoFromManifest(versionSpec, true, auth, arch, manifest)
+    if (info) {
+      downloadPath = await installSpecmaticVersion(info, auth, arch)
+    } else {
+      core.info(
+        'Not found in manifest.  Falling back to download directly from Specmatic'
+      )
+    }
+  } catch (err) {
+    if (
+      err instanceof tc.HTTPError &&
+      (err.httpStatusCode === 403 || err.httpStatusCode === 429)
+    ) {
+      core.info(
+        `Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`
+      )
+    } else {
+      if (err instanceof Error) {
+        core.info(err.message)
+      } else {
+        core.info(`${err}`)
+      }
+
+      core.info('Falling back to download directly from Specmatic')
+    }
   }
 
-  try {
-    core.info('Install from dist')
-    downloadPath = await installSpecmaticVersion(info, arch)
-  } catch (err) {
-    throw new Error(`Failed to download version ${versionSpec}: ${err}`)
+  if (!downloadPath) {
+    info = await getInfoFromDist(versionSpec)
+    if (!info) {
+      throw new Error(`Unable to find Specmatic version '${versionSpec}'.`)
+    }
+
+    try {
+      core.info('Install from dist')
+      downloadPath = await installSpecmaticVersion(info, auth, arch)
+    } catch (err) {
+      throw new Error(`Failed to download version ${versionSpec}: ${err}`)
+    }
   }
 
   return downloadPath
@@ -140,6 +172,7 @@ async function resolveVersionFromManifest(
 
 async function installSpecmaticVersion(
   info: ISpecmaticVersionInfo,
+  auth: string | undefined,
   arch: string
 ): Promise<string> {
   core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`)
@@ -147,7 +180,7 @@ async function installSpecmaticVersion(
   const downloadPath = await tc.downloadTool(info.downloadUrl)
   core.info(`Successfully download specmatic to ${downloadPath}`)
 
-  core.info(`Adding ${downloadPath} to the cache...`)
+  core.info(`Adding to the cache...`)
   info.installPath = await tc.cacheFile(
     downloadPath,
     info.fileName,
@@ -174,8 +207,8 @@ export async function getInfoFromManifest(
     core.debug('No manifest cached')
     manifest = await getManifest(auth)
   }
-
   core.info(`matching ${versionSpec}...`)
+  core.debug(`using manifest: ${JSON.stringify(manifest)}`)
   const rel = await tc.findFromManifest(versionSpec, stable, manifest, arch)
 
   if (rel && rel.files.length > 0) {
@@ -229,8 +262,6 @@ exec -a ${tool.name} java -jar "${path.join(
 async function getInfoFromDist(
   versionSpec: string
 ): Promise<ISpecmaticVersionInfo | null> {
-  // TODO: https://api.github.com/repos/znsio/specmatic/releases/latest
-  // https://github.com/znsio/specmatic/releases/latest/download/specmatic.jar
   const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`
 
   return {

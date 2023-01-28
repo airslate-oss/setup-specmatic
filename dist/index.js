@@ -91,16 +91,45 @@ function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()
         core.info(`Attempting to download ${versionSpec}...`);
         let downloadPath = '';
         let info = null;
-        info = yield getInfoFromDist(versionSpec);
-        if (!info) {
-            throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
-        }
+        //
+        // Try download using manifest file
+        //
         try {
-            core.info('Install from dist');
-            downloadPath = yield installSpecmaticVersion(info, arch);
+            info = yield getInfoFromManifest(versionSpec, true, auth, arch, manifest);
+            if (info) {
+                downloadPath = yield installSpecmaticVersion(info, auth, arch);
+            }
+            else {
+                core.info('Not found in manifest.  Falling back to download directly from Specmatic');
+            }
         }
         catch (err) {
-            throw new Error(`Failed to download version ${versionSpec}: ${err}`);
+            if (err instanceof tc.HTTPError &&
+                (err.httpStatusCode === 403 || err.httpStatusCode === 429)) {
+                core.info(`Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`);
+            }
+            else {
+                if (err instanceof Error) {
+                    core.info(err.message);
+                }
+                else {
+                    core.info(`${err}`);
+                }
+                core.info('Falling back to download directly from Specmatic');
+            }
+        }
+        if (!downloadPath) {
+            info = yield getInfoFromDist(versionSpec);
+            if (!info) {
+                throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
+            }
+            try {
+                core.info('Install from dist');
+                downloadPath = yield installSpecmaticVersion(info, auth, arch);
+            }
+            catch (err) {
+                throw new Error(`Failed to download version ${versionSpec}: ${err}`);
+            }
         }
         return downloadPath;
     });
@@ -120,12 +149,12 @@ function resolveVersionFromManifest(versionSpec, stable, auth, arch, manifest) {
         }
     });
 }
-function installSpecmaticVersion(info, arch) {
+function installSpecmaticVersion(info, auth, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
         const downloadPath = yield tc.downloadTool(info.downloadUrl);
         core.info(`Successfully download specmatic to ${downloadPath}`);
-        core.info(`Adding ${downloadPath} to the cache...`);
+        core.info(`Adding to the cache...`);
         info.installPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, info.resolvedVersion, arch);
         core.info(`Successfully cached specmatic to ${info.installPath}`);
         yield writeJarScript(info);
@@ -140,6 +169,7 @@ function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch
             manifest = yield getManifest(auth);
         }
         core.info(`matching ${versionSpec}...`);
+        core.debug(`using manifest: ${JSON.stringify(manifest)}`);
         const rel = yield tc.findFromManifest(versionSpec, stable, manifest, arch);
         if (rel && rel.files.length > 0) {
             info = {};
@@ -180,8 +210,6 @@ exec -a ${tool.name} java -jar "${path.join(tool.installPath, tool.fileName)}" "
 }
 function getInfoFromDist(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        // TODO: https://api.github.com/repos/znsio/specmatic/releases/latest
-        // https://github.com/znsio/specmatic/releases/latest/download/specmatic.jar
         const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`;
         return {
             type: 'dist',
@@ -292,6 +320,7 @@ function run() {
                 const installDir = yield installer.getSpecmatic(versionSpec, checkLatest, auth, arch);
                 core.addPath(installDir);
                 core.info('Added specmatic to the path');
+                core.info(`Successfully set up Specmatic version ${versionSpec}`);
             }
         }
         catch (error) {
