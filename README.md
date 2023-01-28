@@ -29,6 +29,12 @@ The action will first check the local cache for a version match.  If a version i
 the `main` branch of the [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json)
 repository. To change the default behavior, please use the [check-latest input](#check-latest-version).
 
+Supported runner OSes are:
+- macOS
+- Linux
+
+Supported OS architectures are:
+- x64
 
 **Note:** The `setup-specmatic` action uses packages which are built by Specmatic side.
 The action does not build JAR files from source code.
