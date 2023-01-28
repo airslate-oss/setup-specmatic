@@ -172,7 +172,6 @@ export async function getInfoFromManifest(
   }
 
   core.info(`matching ${versionSpec}...`)
-
   const rel = await tc.findFromManifest(versionSpec, stable, manifest, arch)
 
   if (rel && rel.files.length > 0) {
@@ -191,6 +190,7 @@ export async function getInfoFromManifest(
 export async function getManifest(
   auth: string | undefined
 ): Promise<tc.IToolRelease[]> {
+  core.debug('Download manifest from @airslate-oss/setup-specmatic')
   return tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main')
 }
 

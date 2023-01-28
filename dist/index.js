@@ -154,6 +154,7 @@ function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch
 exports.getInfoFromManifest = getInfoFromManifest;
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug('Download manifest from @airslate-oss/setup-specmatic');
         return tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main');
     });
 }
