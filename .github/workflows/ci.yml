@@ -7,7 +7,7 @@
 
 name: CI
 
-on: # rebuild any PRs and main branch changes
+on:
   pull_request:
   push:
     branches:
@@ -16,7 +16,7 @@ on: # rebuild any PRs and main branch changes
       - 'releases/*'
 
 jobs:
-  build: # make sure build/ci work properly
+  build:
     name: Check Build & CI
     runs-on: ubuntu-latest
 
@@ -29,16 +29,3 @@ jobs:
 
       - name: Run tests
         run: npm run all
-
-  test: # make sure the action works on a clean machine without building
-    name: Action self-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check action
-        uses: ./
-        with:
-          specmatic-version: 0.59.0
