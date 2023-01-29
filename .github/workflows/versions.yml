@@ -30,11 +30,21 @@ jobs:
     name: Check Stable Installation
     runs-on: ${{ matrix.os }}
 
+    # The maximum number of minutes to let a workflow run
+    # before GitHub automatically cancels it. Default: 360
+    timeout-minutes: 30
+
     strategy:
+      # When set to true, GitHub cancels
+      # all in-progress jobs if any matrix job fails.
       fail-fast: false
+
       matrix:
-        # TODO: Add  windows-latest support
-        os: [ubuntu-latest, macos-latest]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          # TODO: Add Windows support
+          # - windows-latest
 
     steps:
       - name: Checkout code
@@ -52,11 +62,21 @@ jobs:
     name: Check OldStable Installation
     runs-on: ${{ matrix.os }}
 
+    # The maximum number of minutes to let a workflow run
+    # before GitHub automatically cancels it. Default: 360
+    timeout-minutes: 30
+
     strategy:
+      # When set to true, GitHub cancels
+      # all in-progress jobs if any matrix job fails.
       fail-fast: false
+
       matrix:
-        # TODO: Add  windows-latest support
-        os: [ubuntu-latest, macos-latest]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          # TODO: Add Windows support
+          # - windows-latest
 
     steps:
       - name: Checkout code
