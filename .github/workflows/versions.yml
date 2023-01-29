@@ -1,0 +1,64 @@
+name: Validate Action
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  schedule:
+    - cron: '0 0 * * *'
+      #      | | | | |
+      #      | | | | |____ day of the week (0 - 6 or SUN-SAT)
+      #      | | | |____ month (1 - 12 or JAN-DEC)
+      #      | | |____ day of the month (1 - 31)
+      #      | |____ hour (0 - 23)
+      #      |____ minute (0 - 59)
+
+jobs:
+  stable:
+    name: Check Stable Installation
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Add  windows-latest support
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Specmatic Stable
+        uses: ./
+        with:
+          specmatic-version: stable
+
+      - name: Verify Specmatic
+        run: specmatic --version
+
+  oldstable:
+    name: Check OldStable Installation
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Add  windows-latest support
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Specmatic OldStable
+        uses: ./
+        with:
+          specmatic-version: oldstable
+
+      - name: Verify Specmatic
+        run: specmatic --version

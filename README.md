@@ -14,19 +14,50 @@
 `setup-specmatic` is an action to set up a [Specmatic](https://specmatic.in) environment for use in actions by
 optionally downloading and caching a version of specmatic by version and adding to `PATH`.
 
-## Features
+## V1
 
 The action offers:
 
 - Creates shell wrapper to call just `specmatic` instead of `java -jar specmatic.jar`
 - Adds `specmatic` to the `PATH`
-- Speeds up specmatic deployment by using caching mechanics and asynchronous approach
+- Check latest version
+- Speeds up Specmatic deployment by using caching mechanics and asynchronous approach
+- The `stable` and `oldstable` aliases
+- Bug Fixes (including issues around version matching and semver)
 
-The action will first check the local cache for a version match.  If a version is not found locally,
-it will pull it from [specmatic releases](https://github.com/znsio/specmatic/releases).
+The action will first check the local cache for a version match.  If a version is not found locally, it will pull it from
+the `main` branch of the [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json)
+repository. To change the default behavior, please use the [check-latest input](#check-latest-version).
 
-**Note:** The `setup-specmatic` action uses packages which are built by specmatic side.
+Supported runner OSes are:
+- macOS
+- Linux
+
+Supported OS architectures are:
+- x64
+
+**Note:** The `setup-specmatic` action uses packages which are built by Specmatic side.
 The action does not build JAR files from source code.
+
+Matching by [semver spec](https://github.com/npm/node-semver):
+
+```yaml
+steps:
+  - uses: actions/checkout@v3
+  - uses: airslate-oss/setup-specmatic@v1
+    with:
+      specmatic-version: '^1.13.1' # The Specmatic version to download (if necessary) and use.
+  - run: specmatic --version
+```
+
+```yaml
+steps:
+  - uses: actions/checkout@v3
+  - uses: airslate-oss/setup-specmatic@v1
+    with:
+      specmatic-version: '>=1.17.0'
+  - run: specmatic --version
+```
 
 ## Usage
 
@@ -42,6 +73,34 @@ steps:
       specmatic-version: 0.59.0 # The Specmatic version to download (if necessary) and use.
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
+
+### Check latest version
+
+The `check-latest` flag defaults to `false`. Use the default or set `check-latest` to `false` if you prefer stability
+and if you want to ensure a specific Specmatic version is always used.
+
+If `check-latest` is set to `true`, the action first checks if the cached version is the latest one. If the locally
+cached version is not the most up-to-date, a Specmatic version will then be downloaded. Set `check-latest` to `true`
+if you want the most up-to-date Go version to always be used.
+
+> Setting `check-latest` to `true` has performance implications as downloading Specmatic versions is slower than using cached versions.
+
+```yaml
+steps:
+  - uses: actions/checkout@v3
+  - uses: airslate-oss/setup-specmatic@v1
+    with:
+      specmatic-version: '1.14'
+      check-latest: true
+  - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
+```
+
+### Using stable/oldstable aliases
+
+If `stable` is provided, action will get the latest stable version from the
+[setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) repository manifest.
+
+If `oldstable` is provided, when current release is 0.59.x, action will resolve version as 0.58.x, where x is the latest patch release.
 
 ### Matrix testing
 

@@ -1,0 +1,753 @@
+[
+    {
+      "version": "0.59.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.59.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.59.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.59.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.59.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.58.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.58.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.58.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.58.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.58.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.57.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.57.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.57.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.57.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.57.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.56.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.56.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.56.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.56.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.56.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.55.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.55.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.55.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.55.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.55.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.54.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.54.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.54.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.54.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.54.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.53.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.53.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.53.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.53.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.53.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.52.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.52.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.52.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.52.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.52.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.51.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.51.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.51.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.51.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.51.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.50.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.50.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.50.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.50.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.50.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.49.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.49.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.49.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.49.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.49.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.48.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.48.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.48.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.48.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.48.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.47.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.47.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.47.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.47.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.47.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.46.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.46.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.46.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.46.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.46.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.45.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.45.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.45.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.45.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.45.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.44.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.44.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.44.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.44.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.44.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.43.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.43.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.43.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.43.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.43.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.42.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.42.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.42.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.42.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.42.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.41.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.41.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.41.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.41.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.41.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.40.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.40.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.40.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.40.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.40.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.39.1",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.39.1",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.39.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.39.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.39.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.38.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.38.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.38.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.38.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.38.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.37.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.37.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.36.1",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.36.1",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.1/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.36.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.36.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.36.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.35.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.35.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.34.1",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.34.1",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.1/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.1/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.34.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.34.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.0/specmatic.jar"
+        }
+      ]
+    },
+    {
+      "version": "0.33.0",
+      "stable": true,
+      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.33.0",
+      "files": [
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "darwin",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "linux",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
+        },
+        {
+          "filename": "specmatic.jar",
+          "arch": "x64",
+          "platform": "win32",
+          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
+        }
+      ]
+    }
+  ]
+  

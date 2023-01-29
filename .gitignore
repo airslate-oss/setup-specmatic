@@ -17,3 +17,5 @@
 /node_modules
 # Ignore built ts files
 /lib
+# Code coverage
+/coverage
