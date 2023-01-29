@@ -23,7 +23,7 @@ on:
       #      |____ minute (0 - 59)
 
 jobs:
-  analyze:
+  codeql-analysis:
     name: Analyze
     runs-on: ubuntu-latest
 
