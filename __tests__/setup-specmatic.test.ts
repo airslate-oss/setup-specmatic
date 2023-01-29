@@ -8,6 +8,7 @@ import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
+let goJsonData = require('./data/specmatic-releases.json')
 let testManifest = require('./data/versions-manifest.json')
 let win32Join = path.win32.join
 let posixJoin = path.posix.join
@@ -22,6 +23,7 @@ describe('setup-specmatic', () => {
   let findSpy: jest.SpyInstance
   let cnSpy: jest.SpyInstance
   let logSpy: jest.SpyInstance
+  let getSpy: jest.SpyInstance
   let dbgSpy: jest.SpyInstance
   let platSpy: jest.SpyInstance
   let archSpy: jest.SpyInstance
@@ -74,6 +76,7 @@ describe('setup-specmatic', () => {
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
+    getSpy = jest.spyOn(im, 'getVersionsDist')
     getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
 
     // io
@@ -88,17 +91,18 @@ describe('setup-specmatic', () => {
     cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
+    getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>goJsonData)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
-      // process.stderr.write('write:' + line + '\n')
+      process.stderr.write('write:' + line + '\n')
     })
     logSpy.mockImplementation(line => {
       // uncomment to debug
-      // process.stderr.write('log:' + line + '\n')
+      process.stderr.write('log:' + line + '\n')
     })
     dbgSpy.mockImplementation(msg => {
       // uncomment to see debug output
-      // process.stderr.write(msg + '\n')
+      process.stderr.write(msg + '\n')
     })
   })
 
@@ -242,18 +246,18 @@ describe('setup-specmatic', () => {
     os.platform = 'linux'
     os.arch = 'x64'
 
-    let versionSpec = '0.33.0'
+    let versionSpec = '0.37.0'
 
     inputs['specmatic-version'] = versionSpec
     inputs['token'] = 'faketoken'
 
     let expectedUrl =
-      'https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar'
 
     findSpy.mockImplementation(() => '')
 
     dlSpy.mockImplementation(async () => '/some/temp/path')
-    let toolPath = path.normalize('/cache/specmatic/0.33.0/x64')
+    let toolPath = path.normalize('/cache/specmatic/0.37.0/x64')
     cacheSpy.mockImplementation(async () => toolPath)
     writeFileSpy.mockImplementation()
 
@@ -264,7 +268,7 @@ describe('setup-specmatic', () => {
       'Not found in manifest.  Falling back to download directly from Specmatic'
     )
     expect(logSpy).toHaveBeenCalledWith(
-      `Acquiring 0.33.0 from ${expectedUrl}...`
+      `Acquiring 0.37.0 from ${expectedUrl}...`
     )
 
     expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
@@ -300,6 +304,37 @@ describe('setup-specmatic', () => {
     )
 
     expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  it('falls back to a version from specmatic dist', async () => {
+    os.platform = 'linux'
+    os.arch = 'x64'
+
+    let versionSpec = '0.33.0'
+
+    inputs['specmatic-version'] = versionSpec
+    inputs['token'] = 'faketoken'
+
+    findSpy.mockImplementation(() => '')
+
+    dlSpy.mockImplementation(async () => '/some/temp/path')
+    let toolPath = path.normalize('/cache/specmatic/0.33.0/x64')
+    cacheSpy.mockImplementation(async () => toolPath)
+    writeFileSpy.mockImplementation()
+
+    await main.run()
+
+    expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.33.0')
+    expect(findSpy).toHaveBeenCalled()
+    expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.33.0...')
+    expect(dlSpy).toHaveBeenCalled()
+    expect(dbgSpy).toHaveBeenCalledWith('matching 0.33.0...')
+    expect(logSpy).toHaveBeenCalledWith(
+      'Not found in manifest.  Falling back to download directly from Specmatic'
+    )
+    expect(logSpy).toHaveBeenCalledWith(`Install from dist`)
+    expect(logSpy).toHaveBeenCalledWith(`Added specmatic to the path`)
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
 

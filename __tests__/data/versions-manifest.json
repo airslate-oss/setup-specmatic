@@ -723,31 +723,6 @@
           "download_url": "https://github.com/znsio/specmatic/releases/download/0.34.0/specmatic.jar"
         }
       ]
-    },
-    {
-      "version": "0.33.0",
-      "stable": true,
-      "release_url": "https://github.com/znsio/specmatic/releases/tag/0.33.0",
-      "files": [
-        {
-          "filename": "specmatic.jar",
-          "arch": "x64",
-          "platform": "darwin",
-          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
-        },
-        {
-          "filename": "specmatic.jar",
-          "arch": "x64",
-          "platform": "linux",
-          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
-        },
-        {
-          "filename": "specmatic.jar",
-          "arch": "x64",
-          "platform": "win32",
-          "download_url": "https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar"
-        }
-      ]
     }
   ]
   

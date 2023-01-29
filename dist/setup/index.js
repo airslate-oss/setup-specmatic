@@ -9772,9 +9772,12 @@ function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()
         if (versionSpec === constants_1.StableReleaseAlias.Stable ||
             versionSpec === constants_1.StableReleaseAlias.OldStable) {
             manifest = yield getManifest(auth);
-            const stableVersion = yield resolveStableVersionInput(versionSpec, arch, osPlat, manifest);
+            let stableVersion = yield resolveStableVersionInput(versionSpec, arch, osPlat, manifest);
             if (!stableVersion) {
-                throw new Error(`Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`);
+                stableVersion = yield resolveStableVersionDist(versionSpec, arch, osPlat);
+                if (!stableVersion) {
+                    throw new Error(`Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`);
+                }
             }
             core.info(`${versionSpec} version resolved as ${stableVersion}`);
             versionSpec = stableVersion;
@@ -10004,6 +10007,18 @@ function parseSpecmaticVersionFile(versionFilePath) {
     return (match ? match[1] : '').trim();
 }
 exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
+function resolveStableVersionDist(versionSpec, arch, platform) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
+        const releases = yield getVersionsDist(dlUrl);
+        if (!releases) {
+            throw new Error(`Specmatic releases url did not return results`);
+        }
+        const candidates = releasesToSpecmaticVersions(releases);
+        const stableVersion = yield resolveStableVersionInput(versionSpec, arch, platform, candidates);
+        return stableVersion;
+    });
+}
 function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         const releases = manifest

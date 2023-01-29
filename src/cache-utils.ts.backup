@@ -1,0 +1,38 @@
+// This file is part of the setup-specmatic.
+//
+// Copyright (c) 2023 airSlate, Inc.
+//
+// For the full copyright and license information, please view
+// the LICENSE file that was distributed with this source code.
+
+import * as cache from '@actions/cache'
+import * as core from '@actions/core'
+
+export function isEnterprise(): boolean {
+  const serverUrl = new URL(
+    process.env['GITHUB_SERVER_URL'] || 'https://github.com'
+  )
+
+  return serverUrl.hostname.toLowerCase() !== 'github.com'
+}
+
+export function isCacheFeatureAvailable(): boolean {
+  if (cache.isFeatureAvailable()) {
+    return true
+  }
+
+  if (isEnterprise()) {
+    core.warning(
+      'Cache action is only supported on GHES version >= 3.5. ' +
+        'If you are on version >=3.5, please check with GHES admin if ' +
+        'Actions cache service is enabled or not.'
+    )
+    return false
+  }
+
+  core.warning(
+    'The runner was not able to contact the cache service. Caching will be skipped'
+  )
+
+  return false
+}
