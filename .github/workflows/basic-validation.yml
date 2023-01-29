@@ -12,7 +12,7 @@
 #   4. Passes unit-tests
 # Additionally node packages used by the action can be audited.
 
-name: CI
+name: Basic validation
 
 on:
   push:

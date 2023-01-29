@@ -1,10 +1,10 @@
 <h1 align="center"><code>setup-specmatic</code></h1>
 <p align="center">
-  <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/ci.yml">
-    <img alt="CI" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/ci.yml/badge.svg">
+  <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/basic-validation.yml">
+    <img alt="CI" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/basic-validation.yml/badge.svg">
   </a>
-  <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/cd.yml">
-    <img alt="CD" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/cd.yml/badge.svg">
+  <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/versions.yml">
+    <img alt="CD" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/versions.yml/badge.svg">
   </a>
   <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/codeql.yml">
     <img alt="CodeQL" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/codeql.yml/badge.svg">
