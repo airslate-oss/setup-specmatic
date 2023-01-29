@@ -320,8 +320,8 @@ describe('setup-specmatic', () => {
 
       await main.run()
 
-      expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.36.1');
-      expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.36.1...');
+      expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.36.1')
+      expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.36.1...')
       expect(dbgSpy).toHaveBeenCalledWith('matching 0.36.1...')
     })
 
