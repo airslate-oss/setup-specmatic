@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc && ncc build -o dist/setup src/setup-specmatic.ts",
     "format": "prettier --write '**/*.ts'",
-    "format-check": "prettier --check '{,!(node_modules)/**/}*.ts'",
+    "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint 'src/**/*.ts'",
     "test": "jest --coverage",
     "all": "npm run lint && npm run format && npm run build && npm test"
