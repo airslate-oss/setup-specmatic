@@ -6,7 +6,9 @@
 // the LICENSE file that was distributed with this source code.
 
 import * as core from '@actions/core'
+import * as io from '@actions/io'
 import * as installer from './installer'
+import cp from 'child_process'
 import fs from 'fs'
 import os from 'os'
 
@@ -38,8 +40,22 @@ export async function run(): Promise<void> {
 
       core.info(`Successfully set up Specmatic version ${versionSpec}`)
     }
+
+    // output the version actually being used
+    const specmaticPath = await io.which('specmatic')
+    const specmaticVersion = (
+      cp.execSync(`${specmaticPath} --version`) || ''
+    ).toString()
+
+    core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`)
+    core.setOutput('specmatic-version', specmaticVersion)
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    let message =
+      'Failed to setup Specmatic environment due to unexpected error'
+    if (error instanceof Error) {
+      message = error.message
+    }
+    core.setFailed(message)
   }
 }
 
@@ -49,7 +65,8 @@ function resolveVersionInput(): string {
 
   if (version && versionFilePath) {
     core.warning(
-      'Both specmatic-version and specmatic-version-file inputs are specified, only specmatic-version will be used'
+      'Both specmatic-version and specmatic-version-file ' +
+        'inputs are specified, only specmatic-version will be used'
     )
   }
 
