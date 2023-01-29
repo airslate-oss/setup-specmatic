@@ -1,3 +1,10 @@
+# This file is part of the setup-specmatic.
+#
+# Copyright (c) 2023 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
 name: Setup specmatic environment
 description: Setup a specmatic environment and add it to the PATH.
 author: airSlate, Inc.
@@ -18,7 +25,7 @@ outputs:
 
 runs:
   using: node16
-  main: dist/index.js
+  main: dist/setup/index.js
 
 branding:
   icon: check-square
