@@ -71,7 +71,8 @@ steps:
   - uses: actions/checkout@v3
   - uses: airslate-oss/setup-specmatic@v1
     with:
-      specmatic-version: 0.59.0 # The Specmatic version to download (if necessary) and use.
+      # The Specmatic version to download (if necessary) and use.
+      specmatic-version: 0.59.0
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
