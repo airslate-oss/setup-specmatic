@@ -9,6 +9,7 @@ import * as tc from '@actions/tool-cache'
 import * as core from '@actions/core'
 import * as path from 'path'
 import * as semver from 'semver'
+import * as httpm from '@actions/http-client'
 import fs from 'fs'
 import os from 'os'
 import {StableReleaseAlias} from './constants'
@@ -35,6 +36,17 @@ export interface ISpecmaticVersionInfo {
   fileName: string
   installPath: string
   name: string
+}
+
+export type GithubRelease = {
+  tag_name: string
+  html_url: string
+  assets: GithubReleaseAsset[]
+}
+
+export interface GithubReleaseAsset {
+  name: string
+  browser_download_url: string
 }
 
 export async function getSpecmatic(
@@ -120,20 +132,21 @@ export async function getSpecmatic(
         `Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`
       )
     } else {
-      if (err instanceof Error) {
-        core.info(err.message)
-      } else {
-        core.info(`${err}`)
-      }
-
-      core.info('Falling back to download directly from Specmatic')
+      core.info((err as Error).message)
     }
+    core.debug((err as Error).stack ?? '')
+    core.info('Falling back to download directly from Specmatic')
   }
 
+  //
+  // Download from Specmatic releases
+  //
   if (!downloadPath) {
-    info = await getInfoFromDist(versionSpec)
+    info = await getInfoFromDist(versionSpec, arch)
     if (!info) {
-      throw new Error(`Unable to find Specmatic version '${versionSpec}'.`)
+      throw new Error(
+        `Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`
+      )
     }
 
     try {
@@ -209,11 +222,9 @@ export async function getInfoFromManifest(
     manifest = await getManifest(auth)
   }
   core.debug(`matching ${versionSpec}...`)
-  core.debug(`using manifest: ${JSON.stringify(manifest)}`)
   const rel = await tc.findFromManifest(versionSpec, stable, manifest, arch)
 
   if (rel && rel.files.length > 0) {
-    core.debug(`found version ${rel.version}`)
     info = {} as ISpecmaticVersionInfo
     info.type = 'manifest'
     info.resolvedVersion = rel.version
@@ -262,9 +273,19 @@ exec -a ${tool.name} java -jar "${path.join(
 }
 
 async function getInfoFromDist(
-  versionSpec: string
+  versionSpec: string,
+  arch: string
 ): Promise<ISpecmaticVersionInfo | null> {
-  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${versionSpec}/specmatic.jar`
+  const version: ISpecmaticVersion | undefined = await findMatch(
+    versionSpec,
+    arch
+  )
+  if (!version) {
+    core.debug(`${versionSpec} did'n match`)
+    return null
+  }
+
+  const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${version.version}/specmatic.jar`
 
   return {
     type: 'dist',
@@ -274,6 +295,85 @@ async function getInfoFromDist(
     installPath: '',
     name: 'specmatic'
   } as ISpecmaticVersionInfo
+}
+
+export async function findMatch(
+  versionSpec: string,
+  arch = os.arch()
+): Promise<ISpecmaticVersion | undefined> {
+  let result: ISpecmaticVersion | undefined
+  let match: ISpecmaticVersion | undefined
+
+  const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
+
+  const releases: GithubRelease[] | null = await getVersionsDist(dlUrl)
+  if (!releases) {
+    throw new Error(`Specmatic releases url did not return results`)
+  }
+
+  const candidates: ISpecmaticVersion[] = releasesToSpecmaticVersions(releases)
+  let specmaticFile: ISpecmaticVersionFile | undefined
+
+  for (const candidate of candidates) {
+    core.debug(`check ${candidate.version} satisfies ${versionSpec}`)
+    if (semver.satisfies(candidate.version, versionSpec)) {
+      specmaticFile = candidate.files.find(file => {
+        core.debug(`${file.arch}===${arch} && ${file.os}===${os.platform()}`)
+        return file.arch === arch && file.os === os.platform()
+      })
+
+      if (specmaticFile) {
+        core.debug(`matched ${candidate.version}`)
+        match = candidate
+        break
+      }
+    }
+  }
+
+  if (match && specmaticFile) {
+    // clone since we're mutating the file list to be only the file that matches
+    result = Object.assign({}, match)
+    result.files = [specmaticFile]
+  }
+
+  return result
+}
+
+export async function getVersionsDist(
+  dlUrl: string
+): Promise<GithubRelease[] | null> {
+  // this returns versions descending so latest is first
+  const http: httpm.HttpClient = new httpm.HttpClient('setup-specmatic', [], {
+    allowRedirects: true,
+    maxRedirects: 3
+  })
+  return (await http.getJson<GithubRelease[]>(dlUrl)).result
+}
+
+function releasesToSpecmaticVersions(
+  releases: GithubRelease[]
+): ISpecmaticVersion[] {
+  const manifest: ISpecmaticVersion[] = []
+  const files: ISpecmaticVersionFile[] = []
+
+  for (const platform of ['darwin', 'linux', 'win32']) {
+    files.push({
+      filename: 'specmatic.jar',
+      os: platform,
+      arch: 'x64',
+      platform
+    } as ISpecmaticVersionFile)
+  }
+
+  for (const release of releases) {
+    manifest.push({
+      version: release.tag_name,
+      stable: true,
+      files
+    } as unknown as ISpecmaticVersion)
+  }
+
+  return manifest
 }
 
 export function parseSpecmaticVersionFile(versionFilePath: string): string {
@@ -288,7 +388,6 @@ export async function resolveStableVersionInput(
   platform: string,
   manifest: tc.IToolRelease[] | ISpecmaticVersion[]
 ): Promise<string | undefined> {
-  core.debug(`using manifest: ${JSON.stringify(manifest)}`)
   const releases = manifest
     .map(item => {
       const index = item.files.findIndex(
