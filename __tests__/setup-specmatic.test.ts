@@ -30,13 +30,14 @@ describe('setup-specmatic', () => {
   let writeFileSpy: jest.SpyInstance
 
   beforeAll(async () => {
-    // Stub out Environment file functionality so we can verify it writes
+    // Stub out ENV file functionality so we can verify it writes
     // to standard out (toolkit is backwards compatible)
     process.env['GITHUB_ENV'] = ''
   }, 100000)
 
   beforeEach(() => {
-    // Stub out ENV file functionality so we can verify it writes to standard out
+    // Stub out PATH file functionality so we can verify it writes
+    // to standard out (toolkit is backwards compatible)
     process.env['GITHUB_PATH'] = ''
 
     // @actions/core
@@ -78,15 +79,15 @@ describe('setup-specmatic', () => {
     dbgSpy = jest.spyOn(core, 'debug')
     cnSpy.mockImplementation(line => {
       // uncomment to debug
-      // process.stderr.write('write:' + line + '\n');
+      // process.stderr.write('write:' + line + '\n')
     })
     logSpy.mockImplementation(line => {
       // uncomment to debug
-      //process.stderr.write('log:' + line + '\n');
+      // process.stderr.write('log:' + line + '\n')
     })
     dbgSpy.mockImplementation(msg => {
       // uncomment to see debug output
-      // process.stderr.write(msg + '\n');
+      // process.stderr.write(msg + '\n')
     })
   })
 
@@ -210,5 +211,78 @@ describe('setup-specmatic', () => {
 
     expect(dlSpy).toHaveBeenCalled()
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  describe('check-latest flag', () => {
+    it("use local version and don't check manifest if check-latest is not specified", async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
+
+      inputs['specmatic-version'] = '0.39'
+      inputs['check-latest'] = false
+
+      const toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
+      findSpy.mockReturnValue(toolPath)
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith(`Found in cache: ${toolPath}`)
+      expect(logSpy).not.toHaveBeenCalledWith(
+        'Attempting to resolve the latest version from the manifest...'
+      )
+    })
+
+    it('check latest version and resolve it from local cache', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
+
+      inputs['specmatic-version'] = '0.39'
+      inputs['check-latest'] = true
+
+      const toolPath = path.normalize('/cache/specmatic/0.39.1/x64')
+      findSpy.mockReturnValue(toolPath)
+      dlSpy.mockImplementation(async () => '/some/temp/path')
+      cacheSpy.mockImplementation(async () => toolPath)
+      writeFileSpy.mockImplementation()
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.39')
+      expect(logSpy).toHaveBeenCalledWith(`Found in cache: ${toolPath}`)
+    })
+
+    it('check latest version and install it from manifest', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
+
+      const versionSpec = '0.36'
+      const patchVersion = '0.36.1'
+      inputs['specmatic-version'] = versionSpec
+      inputs['stable'] = 'true'
+      inputs['check-latest'] = true
+
+      findSpy.mockImplementation(() => '')
+      dlSpy.mockImplementation(async () => '/some/temp/path')
+      const toolPath = path.normalize('/cache/specmatic/0.36.1/x64')
+      cacheSpy.mockImplementation(async () => toolPath)
+      writeFileSpy.mockImplementation()
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith(
+        `Setup specmatic version spec ${versionSpec}`
+      )
+      expect(logSpy).toHaveBeenCalledWith(
+        'Attempting to resolve the latest version from the manifest...'
+      )
+      expect(logSpy).toHaveBeenCalledWith(`Resolved as '${patchVersion}'`)
+      expect(logSpy).toHaveBeenCalledWith(
+        `Attempting to download ${patchVersion}...`
+      )
+      expect(logSpy).toHaveBeenCalledWith('Adding to the cache...')
+      expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
+      expect(logSpy).toHaveBeenCalledWith(
+        `Successfully set up Specmatic version ${versionSpec}`
+      )
+    })
   })
 })
