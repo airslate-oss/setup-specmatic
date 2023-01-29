@@ -46,7 +46,8 @@ steps:
   - uses: actions/checkout@v3
   - uses: airslate-oss/setup-specmatic@v1
     with:
-      specmatic-version: '^1.13.1' # The Specmatic version to download (if necessary) and use.
+      # The Specmatic version to download (if necessary) and use.
+      specmatic-version: '^0.39.1'
   - run: specmatic --version
 ```
 
@@ -55,7 +56,7 @@ steps:
   - uses: actions/checkout@v3
   - uses: airslate-oss/setup-specmatic@v1
     with:
-      specmatic-version: '>=1.17.0'
+      specmatic-version: '>=0.59.0'
   - run: specmatic --version
 ```
 
@@ -90,7 +91,7 @@ steps:
   - uses: actions/checkout@v3
   - uses: airslate-oss/setup-specmatic@v1
     with:
-      specmatic-version: '1.14'
+      specmatic-version: '0.36'
       check-latest: true
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
