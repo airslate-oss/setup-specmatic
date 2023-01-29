@@ -10041,11 +10041,7 @@ function run() {
             core.setOutput('specmatic-version', specmaticVersion);
         }
         catch (error) {
-            let message = 'Failed to setup Specmatic environment due to unexpected error';
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            core.setFailed(message);
+            core.setFailed(error.message);
         }
     });
 }
