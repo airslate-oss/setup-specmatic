@@ -9,7 +9,7 @@ inputs:
     description: Set this option to true if you want the action to always check for the latest available version that satisfies the version spec.
     default: false
   token:
-    description: Used to pull node distributions from setup-specmatic. Since there's a default, this is typically not supplied by the user. When running this action on github.com, the default value is sufficient. When running on GHES, you can pass a personal access token for github.com if you are experiencing rate limiting.
+    description: Used to pull node distributions from setup-specmatic. Since there's a default, this is typically not supplied by the user. When running this action on github.com, the default value is sufficient. When running on GitHub Enterprise Server, you can pass a personal access token for github.com if you are experiencing rate limiting.
     default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
 outputs:
