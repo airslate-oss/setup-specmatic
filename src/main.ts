@@ -43,12 +43,14 @@ export async function run(): Promise<void> {
 
     // output the version actually being used
     const specmaticPath = await io.which('specmatic')
-    const specmaticVersion = (
-      cp.execSync(`${specmaticPath} --version`) || ''
-    ).toString()
+    if (specmaticPath) {
+      const specmaticVersion = (
+        cp.execSync(`${specmaticPath} --version`) || ''
+      ).toString()
 
-    core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`)
-    core.setOutput('specmatic-version', specmaticVersion)
+      core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`)
+      core.setOutput('specmatic-version', specmaticVersion)
+    }
   } catch (error) {
     core.setFailed((error as Error).message)
   }

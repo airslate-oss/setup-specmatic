@@ -10036,9 +10036,11 @@ function run() {
             }
             // output the version actually being used
             const specmaticPath = yield io.which('specmatic');
-            const specmaticVersion = (child_process_1.default.execSync(`${specmaticPath} --version`) || '').toString();
-            core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`);
-            core.setOutput('specmatic-version', specmaticVersion);
+            if (specmaticPath) {
+                const specmaticVersion = (child_process_1.default.execSync(`${specmaticPath} --version`) || '').toString();
+                core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`);
+                core.setOutput('specmatic-version', specmaticVersion);
+            }
         }
         catch (error) {
             core.setFailed(error.message);
