@@ -242,18 +242,18 @@ describe('setup-specmatic', () => {
     os.platform = 'linux'
     os.arch = 'x64'
 
-    let versionSpec = '0.55.0'
+    let versionSpec = '0.33.0'
 
     inputs['specmatic-version'] = versionSpec
     inputs['token'] = 'faketoken'
 
     let expectedUrl =
-      'https://github.com/znsio/specmatic/releases/download/0.55.0/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.33.0/specmatic.jar'
 
     findSpy.mockImplementation(() => '')
 
     dlSpy.mockImplementation(async () => '/some/temp/path')
-    let toolPath = path.normalize('/cache/specmatic/0.55.0/x64')
+    let toolPath = path.normalize('/cache/specmatic/0.33.0/x64')
     cacheSpy.mockImplementation(async () => toolPath)
     writeFileSpy.mockImplementation()
 
@@ -264,7 +264,39 @@ describe('setup-specmatic', () => {
       'Not found in manifest.  Falling back to download directly from Specmatic'
     )
     expect(logSpy).toHaveBeenCalledWith(
-      `Acquiring 0.55.0 from ${expectedUrl}...`
+      `Acquiring 0.33.0 from ${expectedUrl}...`
+    )
+
+    expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  it('downloads a major and minor from a manifest match', async () => {
+    os.platform = 'linux'
+    os.arch = 'x64'
+
+    let versionSpec = '0.35'
+
+    inputs['specmatic-version'] = versionSpec
+    inputs['token'] = 'faketoken'
+
+    let expectedUrl =
+    'https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar'
+
+    findSpy.mockImplementation(() => '')
+
+    dlSpy.mockImplementation(async () => '/some/temp/path')
+    let toolPath = path.normalize('/cache/specmatic/0.35.0/x64')
+    cacheSpy.mockImplementation(async () => toolPath)
+
+    await main.run()
+
+    expect(dlSpy).toHaveBeenCalled()
+    expect(logSpy).not.toHaveBeenCalledWith(
+      'Not found in manifest.  Falling back to download directly from Specmatic'
+    )
+    expect(logSpy).toHaveBeenCalledWith(
+      `Acquiring 0.35.0 from ${expectedUrl}...`
     )
 
     expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
