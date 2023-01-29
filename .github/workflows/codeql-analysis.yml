@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-name: CodeQL
+name: CodeQL analysis
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
-    - cron: '31 7 * * 3'
+    - cron: '0 3 * * 0'
       #      | | | | |
       #      | | | | |____ day of the week (0 - 6 or SUN-SAT)
       #      | | | |____ month (1 - 12 or JAN-DEC)
@@ -32,10 +32,19 @@ jobs:
       contents: read
       security-events: write
 
+    # The maximum number of minutes to let a workflow run
+    # before GitHub automatically cancels it. Default: 360
+    timeout-minutes: 30
+
     strategy:
+      # When set to true, GitHub cancels
+      # all in-progress jobs if any matrix job fails.
       fail-fast: false
+
       matrix:
-        language: [ 'TypeScript' ]
+        language:
+          - JavaScript
+          - TypeScript
 
     steps:
     - name: Checkout repository
@@ -46,7 +55,10 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        source-root: src
+
+    # Autobuild attempts to build any compiled languages
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
