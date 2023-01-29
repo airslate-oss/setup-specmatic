@@ -37,6 +37,7 @@ jobs:
         uses: ./
         with:
           specmatic-version: stable
+
       - name: Verify Specmatic
         run: specmatic --version
 
@@ -58,5 +59,6 @@ jobs:
         uses: ./
         with:
           specmatic-version: oldstable
+
       - name: Verify Specmatic
         run: specmatic --version

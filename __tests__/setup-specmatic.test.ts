@@ -7,6 +7,7 @@ import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
+let testManifest = require('./data/versions-manifest.json')
 let win32Join = path.win32.join
 let posixJoin = path.posix.join
 
@@ -251,8 +252,9 @@ describe('setup-specmatic', () => {
     })
 
     it('check latest version and install it from manifest', async () => {
+      const arch = 'x64'
       os.platform = 'linux'
-      os.arch = 'x64'
+      os.arch = arch
 
       const versionSpec = '0.36'
       const patchVersion = '0.36.1'
@@ -262,7 +264,9 @@ describe('setup-specmatic', () => {
 
       findSpy.mockImplementation(() => '')
       dlSpy.mockImplementation(async () => '/some/temp/path')
-      const toolPath = path.normalize('/cache/specmatic/0.36.1/x64')
+      const toolPath = path.normalize(
+        `/cache/specmatic/${patchVersion}/${arch}`
+      )
       cacheSpy.mockImplementation(async () => toolPath)
       writeFileSpy.mockImplementation()
 
@@ -284,5 +288,31 @@ describe('setup-specmatic', () => {
         `Successfully set up Specmatic version ${versionSpec}`
       )
     })
+  })
+
+  describe('stable/oldstable aliases', () => {
+    it.each(['stable', 'oldstable'])(
+      'acquires latest specmatic version with %s specmatic-version input',
+      async (alias: string) => {
+        const arch = 'x64'
+        os.platform = 'darwin'
+        os.arch = arch
+
+        inputs['specmatic-version'] = alias
+        inputs['architecture'] = os.arch
+
+        findSpy.mockImplementation(() => '')
+        dlSpy.mockImplementation(async () => '/some/temp/path')
+        let toolPath = path.normalize(`/cache/specmatic/${alias}/${arch}`)
+        cacheSpy.mockImplementation(async () => toolPath)
+
+        await main.run()
+
+        const releaseIndex = alias === 'stable' ? 0 : 1
+        expect(logSpy).toHaveBeenCalledWith(
+          `${alias} version resolved as ${testManifest[releaseIndex].version}`
+        )
+      }
+    )
   })
 })

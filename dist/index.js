@@ -232,7 +232,7 @@ function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
         core.debug(`using manifest: ${JSON.stringify(manifest)}`);
         const releases = manifest
             .map(item => {
-            const index = item.files.findIndex(i => i.arch === arch && i.filename.includes(platform));
+            const index = item.files.findIndex(i => i.arch === arch && i.platform === platform);
             return index === -1 ? '' : item.version;
         })
             .filter(item => !!item && !semver.prerelease(item));

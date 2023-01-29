@@ -19,6 +19,7 @@ export interface ISpecmaticVersionFile {
   filename: string
   os: string
   arch: string
+  platform: string
 }
 
 export interface ISpecmaticVersion {
@@ -290,7 +291,7 @@ export async function resolveStableVersionInput(
   const releases = manifest
     .map(item => {
       const index = item.files.findIndex(
-        i => i.arch === arch && i.filename.includes(platform)
+        i => i.arch === arch && i.platform === platform
       )
       return index === -1 ? '' : item.version
     })
