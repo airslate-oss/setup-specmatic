@@ -229,6 +229,7 @@ function parseSpecmaticVersionFile(versionFilePath) {
 exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
 function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`using manifest: ${JSON.stringify(manifest)}`);
         const releases = manifest
             .map(item => {
             const index = item.files.findIndex(i => i.arch === arch && i.filename.includes(platform));

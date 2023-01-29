@@ -286,6 +286,7 @@ export async function resolveStableVersionInput(
   platform: string,
   manifest: tc.IToolRelease[] | ISpecmaticVersion[]
 ): Promise<string | undefined> {
+  core.debug(`using manifest: ${JSON.stringify(manifest)}`)
   const releases = manifest
     .map(item => {
       const index = item.files.findIndex(
