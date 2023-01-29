@@ -11,7 +11,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import fs from 'fs'
 import os from 'os'
-import {StableReleaseAlias} from './utils'
+import {StableReleaseAlias} from './constants'
 
 type InstallationType = 'dist' | 'manifest'
 
@@ -278,7 +278,8 @@ async function getInfoFromDist(
 
 export function parseSpecmaticVersionFile(versionFilePath: string): string {
   const contents = fs.readFileSync(versionFilePath).toString()
-  return contents.trim()
+  const match = contents.match(/^(\d+(\.\d+)*)/m)
+  return (match ? match[1] : '').trim()
 }
 
 export async function resolveStableVersionInput(
