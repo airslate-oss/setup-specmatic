@@ -63,7 +63,7 @@ export async function getSpecmatic(
     versionSpec === StableReleaseAlias.OldStable
   ) {
     manifest = await getManifest(auth)
-    const stableVersion = await resolveStableVersionInput(
+    let stableVersion = await resolveStableVersionInput(
       versionSpec,
       arch,
       osPlat,
@@ -71,9 +71,12 @@ export async function getSpecmatic(
     )
 
     if (!stableVersion) {
-      throw new Error(
-        `Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`
-      )
+      stableVersion = await resolveStableVersionDist(versionSpec, arch, osPlat)
+      if (!stableVersion) {
+        throw new Error(
+          `Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`
+        )
+      }
     }
 
     core.info(`${versionSpec} version resolved as ${stableVersion}`)
@@ -380,6 +383,29 @@ export function parseSpecmaticVersionFile(versionFilePath: string): string {
   const contents = fs.readFileSync(versionFilePath).toString()
   const match = contents.match(/^(\d+(\.\d+)*)/m)
   return (match ? match[1] : '').trim()
+}
+
+async function resolveStableVersionDist(
+  versionSpec: string,
+  arch: string,
+  platform: string
+): Promise<string | undefined> {
+  const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
+
+  const releases: GithubRelease[] | null = await getVersionsDist(dlUrl)
+  if (!releases) {
+    throw new Error(`Specmatic releases url did not return results`)
+  }
+
+  const candidates: ISpecmaticVersion[] = releasesToSpecmaticVersions(releases)
+  const stableVersion = await resolveStableVersionInput(
+    versionSpec,
+    arch,
+    platform,
+    candidates
+  )
+
+  return stableVersion
 }
 
 export async function resolveStableVersionInput(
