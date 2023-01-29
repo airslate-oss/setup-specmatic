@@ -331,7 +331,7 @@ describe('setup-specmatic', () => {
     })
 
     it('reports a read failure', async () => {
-      inputs['go-version-file'] = '.specmatic-version'
+      inputs['specmatic-version-file'] = '.specmatic-version'
       existsSpy.mockImplementation(() => false)
 
       await main.run()
