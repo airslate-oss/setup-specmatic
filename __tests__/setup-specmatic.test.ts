@@ -281,7 +281,7 @@ describe('setup-specmatic', () => {
     inputs['token'] = 'faketoken'
 
     let expectedUrl =
-    'https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar'
 
     findSpy.mockImplementation(() => '')
 
