@@ -51,8 +51,8 @@ export async function run(): Promise<void> {
       core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`)
       core.setOutput('specmatic-version', specmaticVersion)
     }
-  } catch (error) {
-    core.setFailed((error as Error).message)
+  } catch (err) {
+    core.setFailed((err as Error).message)
   }
 }
 

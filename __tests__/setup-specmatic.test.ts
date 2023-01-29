@@ -224,6 +224,53 @@ describe('setup-specmatic', () => {
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
 
+  it('does not find a version that does not exist', async () => {
+    os.platform = 'linux'
+    os.arch = 'x64'
+
+    inputs['specmatic-version'] = '99.99.9'
+
+    findSpy.mockImplementation(() => '')
+    await main.run()
+
+    expect(cnSpy).toHaveBeenCalledWith(
+      `::error::Unable to find Specmatic version '99.99.9' for platform linux and architecture x64.${osm.EOL}`
+    )
+  })
+
+  it('downloads a version from a manifest match', async () => {
+    os.platform = 'linux'
+    os.arch = 'x64'
+
+    let versionSpec = '0.55.0'
+
+    inputs['specmatic-version'] = versionSpec
+    inputs['token'] = 'faketoken'
+
+    let expectedUrl =
+      'https://github.com/znsio/specmatic/releases/download/0.55.0/specmatic.jar'
+
+    findSpy.mockImplementation(() => '')
+
+    dlSpy.mockImplementation(async () => '/some/temp/path')
+    let toolPath = path.normalize('/cache/specmatic/0.55.0/x64')
+    cacheSpy.mockImplementation(async () => toolPath)
+    writeFileSpy.mockImplementation()
+
+    await main.run()
+
+    expect(dlSpy).toHaveBeenCalled()
+    expect(logSpy).not.toHaveBeenCalledWith(
+      'Not found in manifest.  Falling back to download directly from Specmatic'
+    )
+    expect(logSpy).toHaveBeenCalledWith(
+      `Acquiring 0.55.0 from ${expectedUrl}...`
+    )
+
+    expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
   describe('check-latest flag', () => {
     it("use local version and don't check manifest if check-latest is not specified", async () => {
       os.platform = 'linux'
