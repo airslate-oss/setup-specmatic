@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
 import fs from 'fs'
 import cp from 'child_process'
@@ -27,6 +28,8 @@ describe('setup-specmatic', () => {
   let joinSpy: jest.SpyInstance
   let dlSpy: jest.SpyInstance
   let cacheSpy: jest.SpyInstance
+  let existsSpy: jest.SpyInstance
+  let readFileSpy: jest.SpyInstance
   let execSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
 
@@ -72,6 +75,8 @@ describe('setup-specmatic', () => {
     cacheSpy = jest.spyOn(tc, 'cacheFile')
 
     // io
+    existsSpy = jest.spyOn(fs, 'existsSync')
+    readFileSpy = jest.spyOn(fs, 'readFileSync')
     writeFileSpy = jest.spyOn(fs.promises, 'writeFile')
 
     // writes
@@ -286,6 +291,48 @@ describe('setup-specmatic', () => {
       expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
       expect(logSpy).toHaveBeenCalledWith(
         `Successfully set up Specmatic version ${versionSpec}`
+      )
+    })
+  })
+
+  describe('specmatic-version-file', () => {
+    const versionFileContents = '0.42'
+
+    it('reads version from .specmatic-version', async () => {
+      inputs['specmatic-version-file'] = '.specmatic-version'
+
+      existsSpy.mockImplementation(() => true)
+      readFileSpy.mockImplementation(() => Buffer.from(versionFileContents))
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.42')
+      expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.42...')
+      expect(dbgSpy).toHaveBeenCalledWith('matching 0.42...')
+    })
+
+    it('is overwritten by specmatic-version', async () => {
+      inputs['specmatic-version'] = '0.36.1'
+      inputs['specmatic-version-file'] = '.specmatic-version'
+
+      existsSpy.mockImplementation(() => true)
+      readFileSpy.mockImplementation(() => Buffer.from(versionFileContents))
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.36.1');
+      expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.36.1...');
+      expect(dbgSpy).toHaveBeenCalledWith('matching 0.36.1...')
+    })
+
+    it('reports a read failure', async () => {
+      inputs['go-version-file'] = '.specmatic-version'
+      existsSpy.mockImplementation(() => false)
+
+      await main.run()
+
+      expect(cnSpy).toHaveBeenCalledWith(
+        `::error::The specified specmatic version file at: .specmatic-version does not exist${osm.EOL}`
       )
     })
   })
