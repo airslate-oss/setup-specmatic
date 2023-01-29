@@ -102,7 +102,34 @@ steps:
 If `stable` is provided, action will get the latest stable version from the
 [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) repository manifest.
 
-If `oldstable` is provided, when current release is 0.59.x, action will resolve version as 0.58.x, where x is the latest patch release.
+If `oldstable` is provided, when current release is 0.59.x, action will resolve version as 0.58.x, where x is the latest
+patch release.
+
+### Getting Specmatic version from the version file
+
+The `specmatic-version-file` input accepts a path to a version file that contains the version of Specmatic to be used by
+a project. The version file may contain only major and minor (e.g. 0.59) tags. The action will search for the latest
+available patch version sequentially in the runner's directory with the cached tools, in the
+[versions-manifest.json](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) file or
+at the specmatic repo.
+
+If both the `specmatic-version` and the `specmatic-version-file` inputs are provided then the `specmatic-version` input
+is used.
+> The action will search for the version file relative to the repository root
+
+```yaml
+steps:
+- uses: actions/checkout@v3
+- uses: airslate-oss/setup-specmatic@v1
+  with:
+    specmatic-version-file: '.specmatic-version'
+- run: specmatic --version
+```
+
+Example of the `.specmatic-version` file:
+```
+0.59
+```
 
 ### Matrix testing
 

@@ -9686,6 +9686,28 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 9042:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+// This file is part of the setup-specmatic.
+//
+// Copyright (c) 2023 airSlate, Inc.
+//
+// For the full copyright and license information, please view
+// the LICENSE file that was distributed with this source code.
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.StableReleaseAlias = void 0;
+var StableReleaseAlias;
+(function (StableReleaseAlias) {
+    StableReleaseAlias["Stable"] = "stable";
+    StableReleaseAlias["OldStable"] = "oldstable";
+})(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
+
+
+/***/ }),
+
 /***/ 2574:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -9740,13 +9762,13 @@ const path = __importStar(__nccwpck_require__(1017));
 const semver = __importStar(__nccwpck_require__(1383));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-const utils_1 = __nccwpck_require__(1314);
+const constants_1 = __nccwpck_require__(9042);
 function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()) {
     return __awaiter(this, void 0, void 0, function* () {
         const osPlat = os_1.default.platform();
         let manifest;
-        if (versionSpec === utils_1.StableReleaseAlias.Stable ||
-            versionSpec === utils_1.StableReleaseAlias.OldStable) {
+        if (versionSpec === constants_1.StableReleaseAlias.Stable ||
+            versionSpec === constants_1.StableReleaseAlias.OldStable) {
             manifest = yield getManifest(auth);
             const stableVersion = yield resolveStableVersionInput(versionSpec, arch, osPlat, manifest);
             if (!stableVersion) {
@@ -9909,7 +9931,8 @@ function getInfoFromDist(versionSpec) {
 }
 function parseSpecmaticVersionFile(versionFilePath) {
     const contents = fs_1.default.readFileSync(versionFilePath).toString();
-    return contents.trim();
+    const match = contents.match(/^(\d+(\.\d+)*)/m);
+    return (match ? match[1] : '').trim();
 }
 exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
 function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
@@ -9922,7 +9945,7 @@ function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
         })
             .filter(item => !!item && !semver.prerelease(item));
         core.debug(`resolved releases: ${JSON.stringify(releases)}`);
-        if (versionSpec === utils_1.StableReleaseAlias.Stable) {
+        if (versionSpec === constants_1.StableReleaseAlias.Stable) {
             return releases[0];
         }
         else {
@@ -9987,7 +10010,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
+const io = __importStar(__nccwpck_require__(7436));
 const installer = __importStar(__nccwpck_require__(2574));
+const child_process_1 = __importDefault(__nccwpck_require__(2081));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
 function run() {
@@ -10009,10 +10034,16 @@ function run() {
                 core.info('Added specmatic to the path');
                 core.info(`Successfully set up Specmatic version ${versionSpec}`);
             }
+            // output the version actually being used
+            const specmaticPath = yield io.which('specmatic');
+            if (specmaticPath) {
+                const specmaticVersion = (child_process_1.default.execSync(`${specmaticPath} --version`) || '').toString();
+                core.debug(`${specmaticPath} --version returned '${specmaticVersion}'`);
+                core.setOutput('specmatic-version', specmaticVersion);
+            }
         }
         catch (error) {
-            if (error instanceof Error)
-                core.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
@@ -10021,7 +10052,8 @@ function resolveVersionInput() {
     let version = core.getInput('specmatic-version');
     const versionFilePath = core.getInput('specmatic-version-file');
     if (version && versionFilePath) {
-        core.warning('Both specmatic-version and specmatic-version-file inputs are specified, only specmatic-version will be used');
+        core.warning('Both specmatic-version and specmatic-version-file ' +
+            'inputs are specified, only specmatic-version will be used');
     }
     if (version) {
         return version;
@@ -10034,28 +10066,6 @@ function resolveVersionInput() {
     }
     return version;
 }
-
-
-/***/ }),
-
-/***/ 1314:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-// This file is part of the setup-specmatic.
-//
-// Copyright (c) 2023 airSlate, Inc.
-//
-// For the full copyright and license information, please view
-// the LICENSE file that was distributed with this source code.
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.StableReleaseAlias = void 0;
-var StableReleaseAlias;
-(function (StableReleaseAlias) {
-    StableReleaseAlias["Stable"] = "stable";
-    StableReleaseAlias["OldStable"] = "oldstable";
-})(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
 
 
 /***/ }),
