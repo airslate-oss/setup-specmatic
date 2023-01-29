@@ -207,11 +207,12 @@ export async function getInfoFromManifest(
     core.debug('No manifest cached')
     manifest = await getManifest(auth)
   }
-  core.info(`matching ${versionSpec}...`)
+  core.debug(`matching ${versionSpec}...`)
   core.debug(`using manifest: ${JSON.stringify(manifest)}`)
   const rel = await tc.findFromManifest(versionSpec, stable, manifest, arch)
 
   if (rel && rel.files.length > 0) {
+    core.debug(`found version ${rel.version}`)
     info = {} as ISpecmaticVersionInfo
     info.type = 'manifest'
     info.resolvedVersion = rel.version

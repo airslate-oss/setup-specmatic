@@ -168,10 +168,11 @@ function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch
             core.debug('No manifest cached');
             manifest = yield getManifest(auth);
         }
-        core.info(`matching ${versionSpec}...`);
+        core.debug(`matching ${versionSpec}...`);
         core.debug(`using manifest: ${JSON.stringify(manifest)}`);
         const rel = yield tc.findFromManifest(versionSpec, stable, manifest, arch);
         if (rel && rel.files.length > 0) {
+            core.debug(`found version ${rel.version}`);
             info = {};
             info.type = 'manifest';
             info.resolvedVersion = rel.version;
