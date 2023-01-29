@@ -32,6 +32,7 @@ describe('setup-specmatic', () => {
   let readFileSpy: jest.SpyInstance
   let execSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
+  let getManifestSpy: jest.SpyInstance
 
   beforeAll(async () => {
     // Stub out ENV file functionality so we can verify it writes
@@ -73,11 +74,15 @@ describe('setup-specmatic', () => {
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
+    getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
 
     // io
     existsSpy = jest.spyOn(fs, 'existsSync')
     readFileSpy = jest.spyOn(fs, 'readFileSync')
     writeFileSpy = jest.spyOn(fs.promises, 'writeFile')
+
+    // gets
+    getManifestSpy.mockImplementation(() => <tc.IToolRelease[]>testManifest)
 
     // writes
     cnSpy = jest.spyOn(process.stdout, 'write')
