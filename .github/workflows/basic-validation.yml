@@ -1,0 +1,80 @@
+# This file is part of the setup-specmatic.
+#
+# Copyright (c) 2023 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+# This workflow helps ensure that the code of the action we're going to deploy:
+#   1. Is well-formatted
+#   2. Is linted
+#   3. Successfully builds
+#   4. Passes unit-tests
+# Additionally node packages used by the action can be audited.
+
+name: Basic validation
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  basic-validation:
+    name: Basic validation
+    runs-on: ${{ matrix.os }}
+
+    # The maximum number of minutes to let a workflow run
+    # before GitHub automatically cancels it. Default: 360
+    timeout-minutes: 30
+
+    strategy:
+      # When set to true, GitHub cancels
+      # all in-progress jobs if any matrix job fails.
+      fail-fast: false
+
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          # TODO: Add Windows support
+          # - windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 5
+
+      - name: Setup Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run prettier
+        run: npm run format-check
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Rebuild the dist directory
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Audit packages
+        run: npm audit --audit-level=high
+
+      - name: Success Reporting
+        if: success()
+        run: git log --format=fuller -5

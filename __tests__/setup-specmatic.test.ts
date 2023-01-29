@@ -165,7 +165,7 @@ describe('setup-specmatic', () => {
     expect(logSpy).toHaveBeenCalledWith(`Setup specmatic version spec 0.58.0`)
   })
 
-  it('finds a version of go already in the cache', async () => {
+  it('finds a version of specmatic already in the cache', async () => {
     inputs['specmatic-version'] = '0.59.0'
 
     let toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
