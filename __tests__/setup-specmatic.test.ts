@@ -1,17 +1,20 @@
 import * as core from '@actions/core'
-import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
 import fs from 'fs'
-import cp from 'child_process'
 import osm from 'os'
 import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
-let goJsonData = require('./data/specmatic-releases.json')
-let testManifest = require('./data/versions-manifest.json')
-let win32Join = path.win32.join
-let posixJoin = path.posix.join
+const goJsonData = JSON.parse(
+  fs.readFileSync('./__tests__/data/specmatic-releases.json', 'utf-8')
+)
+const testManifest = JSON.parse(
+  fs.readFileSync('./__tests__/data/versions-manifest.json', 'utf-8')
+)
+
+const win32Join = path.win32.join
+const posixJoin = path.posix.join
 
 describe('setup-specmatic', () => {
   let inputs = {} as any
@@ -19,7 +22,6 @@ describe('setup-specmatic', () => {
 
   let inSpy: jest.SpyInstance
   let getBooleanInputSpy: jest.SpyInstance
-  let exportVarSpy: jest.SpyInstance
   let findSpy: jest.SpyInstance
   let cnSpy: jest.SpyInstance
   let logSpy: jest.SpyInstance
@@ -32,7 +34,6 @@ describe('setup-specmatic', () => {
   let cacheSpy: jest.SpyInstance
   let existsSpy: jest.SpyInstance
   let readFileSpy: jest.SpyInstance
-  let execSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
   let getManifestSpy: jest.SpyInstance
 
@@ -53,7 +54,6 @@ describe('setup-specmatic', () => {
     inSpy.mockImplementation(name => inputs[name])
     getBooleanInputSpy = jest.spyOn(core, 'getBooleanInput')
     getBooleanInputSpy.mockImplementation(name => inputs[name])
-    exportVarSpy = jest.spyOn(core, 'exportVariable')
 
     // node
     os = {}
@@ -61,7 +61,6 @@ describe('setup-specmatic', () => {
     platSpy.mockImplementation(() => os['platform'])
     archSpy = jest.spyOn(osm, 'arch')
     archSpy.mockImplementation(() => os['arch'])
-    execSpy = jest.spyOn(cp, 'execSync')
 
     // switch path join behavior based on set os.platform
     joinSpy = jest.spyOn(path, 'join')
@@ -94,15 +93,15 @@ describe('setup-specmatic', () => {
     getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>goJsonData)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
-      process.stderr.write('write:' + line + '\n')
+      // process.stderr.write(`write: ${line}\n`)
     })
     logSpy.mockImplementation(line => {
       // uncomment to debug
-      process.stderr.write('log:' + line + '\n')
+      // process.stderr.write(`log: ${line}\n`)
     })
     dbgSpy.mockImplementation(msg => {
       // uncomment to see debug output
-      process.stderr.write(msg + '\n')
+      // process.stderr.write(`${msg}\n`)
     })
   })
 
