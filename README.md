@@ -80,7 +80,7 @@ steps:
     # latest available version that satisfies the version spec.
     #
     # Default: 'false'
-    check-latest: 'false'
+    check-latest: ''
 
     # Personal access token (PAT) used to fetch the repository. The PAT is configured
     # with the local git config, which enables your scripts to run authenticated git
