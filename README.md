@@ -62,9 +62,42 @@ steps:
 
 ## Usage
 
-See [action.yml](https://github.com/airslate-oss/setup-specmatic/blob/main/action.yml)
+```yaml
+- uses: airslate-oss/setup-specmatic@v1
+  with:
+    # The specmatic version to download (if necessary) and use.
+    #
+    # Either specmatic-version or specmatic-version-file is mandatory.
+    specmatic-version: ''
 
-### Basic
+    # Path to the version file. Can be any filename.
+    # The file must contain the version and nothing else.
+    #
+    # Either specmatic-version or specmatic-version-file is mandatory.
+    specmatic-version-file: ''
+
+    # Set this option to true if you want the action to always check for the
+    # latest available version that satisfies the version spec.
+    #
+    # Default: 'false'
+    check-latest: 'false'
+
+    # Personal access token (PAT) used to fetch the repository. The PAT is configured
+    # with the local git config, which enables your scripts to run authenticated git
+    # commands. The post-job step removes the PAT.
+    #
+    # We recommend using a service account with the least permissions necessary. Also
+    # when generating a new PAT, select the least scopes necessary.
+    #
+    # Default: ${{ github.token }}
+    token: ''
+```
+
+For details see [action.yml](https://github.com/airslate-oss/setup-specmatic/blob/main/action.yml).
+
+### Scenarios
+
+#### Basic
 
 ```yaml
 steps:
@@ -76,7 +109,7 @@ steps:
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
-### Check latest version
+#### Check latest version
 
 The `check-latest` flag defaults to `false`. Use the default or set `check-latest` to `false` if you prefer stability
 and if you want to ensure a specific Specmatic version is always used.
@@ -97,7 +130,7 @@ steps:
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
-### Using stable/oldstable aliases
+#### Using stable/oldstable aliases
 
 If `stable` is provided, action will get the latest stable version from the
 [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) repository manifest.
@@ -131,7 +164,7 @@ Example of the `.specmatic-version` file:
 0.59
 ```
 
-### Matrix testing
+#### Matrix testing
 
 ```yaml
 jobs:
