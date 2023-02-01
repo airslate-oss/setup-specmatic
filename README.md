@@ -142,7 +142,7 @@ If `stable` is provided, action will get the latest stable version from the
 If `oldstable` is provided, when current release is 0.59.x, action will resolve version as 0.58.x, where x is the latest
 patch release.
 
-### Getting Specmatic version from the version file
+#### Getting Specmatic version from the version file
 
 The `specmatic-version-file` input accepts a path to a version file that contains the version of Specmatic to be used by
 a project. The version file may contain only major and minor (e.g. 0.59) tags. The action will search for the latest
