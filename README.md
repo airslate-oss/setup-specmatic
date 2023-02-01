@@ -82,12 +82,16 @@ steps:
     # Default: 'false'
     check-latest: ''
 
-    # Personal access token (PAT) used to fetch the repository. The PAT is configured
-    # with the local git config, which enables your scripts to run authenticated git
-    # commands. The post-job step removes the PAT.
+    # Personal access token (PAT) used to fetch the repository. Used
+    # to pull node distributions from setup-specmatic. Since there's a
+    # default, this is typically not supplied by the user. When running
+    # this action on github.com, the default value is sufficient. When
+    # running on  GitHub Enterprise Server, you can pass a personal access
+    # token for github.com if you are experiencing rate limiting.
     #
-    # We recommend using a service account with the least permissions necessary. Also
-    # when generating a new PAT, select the least scopes necessary.
+    # We recommend using a service account with the least permissions
+    # necessary. Also when generating a new PAT, select the least scopes
+    # necessary.
     #
     # Default: ${{ github.token }}
     token: ''
