@@ -17,7 +17,7 @@ on:
 jobs:
   licensed:
     name: Licensed
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -28,12 +28,22 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Install licensed tool
+      - name: Update Homebrew
         run: |
-          cd "$RUNNER_TEMP"
-          curl -Lfs -o licensed.tar.gz https://github.com/github/licensed/releases/download/3.9.0/licensed-3.9.0-linux-x64.tar.gz 
-          sudo tar -xzf licensed.tar.gz
-          sudo mv licensed /usr/local/bin/licensed
+          brew update --preinstall
+          cat "$(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/licensed.rb" > .github/brew-formulae
+
+      - name: Configure Homebrew cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            "$(brew --cache)"/licensed--*
+            "$(brew --cache)"/downloads/*--licensed-*
+          key: brew-${{ hashFiles('.github/brew-formulae') }}
+          restore-keys: brew-
+
+      - name: Install licensed tool
+        run: env HOMEBREW_NO_AUTO_UPDATE=1 brew install licensed
 
       - name: Check cached dependency records
         run: licensed status
