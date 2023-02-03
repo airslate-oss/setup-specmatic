@@ -17,7 +17,7 @@ on:
 jobs:
   licensed:
     name: Licensed
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -29,11 +29,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Install licensed tool
-        run: |
-          cd "$RUNNER_TEMP"
-          curl -Lfs -o licensed.tar.gz https://github.com/github/licensed/releases/download/4.0.4/licensed-4.0.4-linux-x64.tar.gz 
-          sudo tar -xzf licensed.tar.gz
-          sudo mv licensed /usr/local/bin/licensed
+        run: brew install licensed
 
       - name: Check cached dependency records
         run: licensed status
