@@ -43,8 +43,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          # TODO: Add Windows support
-          # - windows-latest
+          - windows-latest
 
     steps:
       - name: Checkout code
