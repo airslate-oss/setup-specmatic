@@ -6,8 +6,8 @@
   <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/versions.yml">
     <img alt="Validate Action" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/versions.yml/badge.svg">
   </a>
-  <a href="https://github.com/airslate-oss/setup-specmatic/actions/workflows/codeql-analysis.yml">
-    <img alt="CodeQL analysis" src="https://github.com/airslate-oss/setup-specmatic/actions/workflows/codeql-analysis.yml/badge.svg">
+  <a href="https://codecov.io/github/airslate-oss/setup-specmatic">
+    <img alt="Coverage status" src="https://codecov.io/github/airslate-oss/setup-specmatic/branch/main/graph/badge.svg">
   </a>
 </p>
 

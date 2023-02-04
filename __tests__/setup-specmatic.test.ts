@@ -6,7 +6,7 @@ import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
-const goJsonData = JSON.parse(
+const jsonData = JSON.parse(
   fs.readFileSync('./__tests__/data/specmatic-releases.json', 'utf-8')
 )
 const testManifest = JSON.parse(
@@ -90,7 +90,7 @@ describe('setup-specmatic', () => {
     cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
-    getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>goJsonData)
+    getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>jsonData)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
       // process.stderr.write(`write: ${line}\n`)
@@ -218,12 +218,38 @@ describe('setup-specmatic', () => {
 
     findSpy.mockImplementation(() => '')
     dlSpy.mockImplementation(() => '/some/temp/path')
+
     let toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
     cacheSpy.mockImplementation(() => toolPath)
     writeFileSpy.mockImplementation()
+
     await main.run()
 
-    expect(dlSpy).toHaveBeenCalled()
+    expect(dlSpy).toHaveBeenCalledWith(
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+    )
+    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  it('downloads a version not in the cache (windows)', async () => {
+    os.platform = 'win32'
+    os.arch = 'x64'
+
+    inputs['specmatic-version'] = '0.39.1'
+    process.env['RUNNER_TEMP'] = 'C:\\temp\\'
+
+    findSpy.mockImplementation(() => '')
+    dlSpy.mockImplementation(() => 'C:\\temp\\some\\path')
+
+    let toolPath = path.normalize('C:\\cache\\specmatic\\0.39.0\\x64')
+    cacheSpy.mockImplementation(() => toolPath)
+    writeFileSpy.mockImplementation()
+
+    await main.run()
+
+    expect(dlSpy).toHaveBeenCalledWith(
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+    )
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
 
@@ -335,6 +361,19 @@ describe('setup-specmatic', () => {
     expect(logSpy).toHaveBeenCalledWith(`Install from dist`)
     expect(logSpy).toHaveBeenCalledWith(`Added specmatic to the path`)
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+  })
+
+  it('converts prerelease versions', async () => {
+    expect(im.makeSemver('0.22-beta.1')).toBe('0.22.0-beta.1')
+  })
+
+  it('converts dot zero versions', async () => {
+    expect(im.makeSemver('0.39')).toBe('0.39.0')
+  })
+
+  it('does not convert exact versions', async () => {
+    expect(im.makeSemver('0.22.0-beta.1')).toBe('0.22.0-beta.1')
+    expect(im.makeSemver('0.33.1')).toBe('0.33.1')
   })
 
   describe('check-latest flag', () => {

@@ -202,7 +202,7 @@ async function installSpecmaticVersion(
     downloadPath,
     info.fileName,
     info.name,
-    info.resolvedVersion,
+    makeSemver(info.resolvedVersion),
     arch
   )
   core.info(`Successfully cached specmatic to ${info.installPath}`)
@@ -321,8 +321,10 @@ export async function findMatch(
   let specmaticFile: ISpecmaticVersionFile | undefined
 
   for (const candidate of candidates) {
-    core.debug(`check ${candidate.version} satisfies ${versionSpec}`)
-    if (semver.satisfies(candidate.version, versionSpec)) {
+    const version = makeSemver(candidate.version)
+    core.debug(`check ${version} satisfies ${versionSpec}`)
+
+    if (semver.satisfies(version, versionSpec)) {
       specmaticFile = candidate.files.find(file => {
         core.debug(`${file.arch}===${arch} && ${file.os}===${os.platform()}`)
         return file.arch === arch && file.os === os.platform()
@@ -354,6 +356,33 @@ export async function getVersionsDist(
     maxRedirects: 3
   })
   return (await http.getJson<GithubRelease[]>(dlUrl)).result
+}
+
+// Convert the specmatic version syntax into semver for semver matching
+// 0.58.0 => 0.58.0
+// 0.59 => 0.59
+// 0.60.0-beta.1 => 0.60.0-beta.1
+export function makeSemver(version: string): string {
+  const parts = version.split('-')
+  const semVersion = semver.coerce(parts[0])?.version
+  if (!semVersion) {
+    throw new Error(
+      `The version: ${version} can't be changed to SemVer notation`
+    )
+  }
+
+  if (!parts[1]) {
+    return semVersion
+  }
+
+  const fullVersion = semver.valid(`${semVersion}-${parts[1]}`)
+  if (!fullVersion) {
+    throw new Error(
+      `The version: ${version} can't be changed to SemVer notation`
+    )
+  }
+
+  return fullVersion
 }
 
 function releasesToSpecmaticVersions(
