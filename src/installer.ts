@@ -261,16 +261,18 @@ async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
   let header = ''
   let comment = ''
   let wrapper = ''
+  let filename = tool.name
   const cmd = `java -jar "${path.join(tool.installPath, tool.fileName)}"`
 
   if (os.platform() === 'win32') {
-    header = '@echo off'
+    header = '' // '@echo off'
     comment = '@rem'
     wrapper = `start ${cmd} %*`
   } else {
     header = '#!/usr/bin/env bash'
     comment = '#'
     wrapper = `exec -a ${tool.name} ${cmd} "$@"`
+    filename = `${tool.name}.bat`
   }
 
   script = `${header}
@@ -282,7 +284,7 @@ ${comment}
 
 ${wrapper}\n`
 
-  const scriptPath = path.join(tool.installPath, tool.name)
+  const scriptPath = path.join(tool.installPath, filename)
   await fs.promises.writeFile(scriptPath, script, {mode: 0o555})
 
   core.info(`Successfully created executable at ${scriptPath}`)
