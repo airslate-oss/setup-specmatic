@@ -9904,23 +9904,23 @@ function getManifest(auth) {
 exports.getManifest = getManifest;
 function writeJarScript(tool) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('Creating executable...');
+        core.info('Creating wrapper...');
         let header = '';
         let wrapper = '';
         let filename = tool.name;
         const cmd = `java -jar "${path.join(tool.installPath, tool.fileName)}"`;
         if (os_1.default.platform() === 'win32') {
-            wrapper = `start ${cmd} %*`;
+            wrapper = `${cmd} %*`;
             filename = `${tool.name}.bat`;
         }
         else {
-            header = '#!/usr/bin/env bash';
-            wrapper = `exec -a ${tool.name} ${cmd} "$@"\n`;
+            header = `#!/usr/bin/env bash${os_1.default.EOL}`;
+            wrapper = `exec -a ${tool.name} ${cmd} "$@"`;
         }
-        const script = `${header}${os_1.default.EOL}${wrapper}${os_1.default.EOL}`;
+        const script = `${header}${wrapper}${os_1.default.EOL}`;
         const scriptPath = path.join(tool.installPath, filename);
         yield fs_1.default.promises.writeFile(scriptPath, script, { mode: 0o555 });
-        core.info(`Successfully created executable at ${scriptPath}`);
+        core.info(`Successfully created wrapper at ${scriptPath}`);
     });
 }
 function getInfoFromDist(versionSpec, arch) {

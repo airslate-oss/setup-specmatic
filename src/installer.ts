@@ -255,7 +255,7 @@ export async function getManifest(
 }
 
 async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
-  core.info('Creating executable...')
+  core.info('Creating wrapper...')
 
   let header = ''
   let wrapper = ''
@@ -263,19 +263,19 @@ async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
   const cmd = `java -jar "${path.join(tool.installPath, tool.fileName)}"`
 
   if (os.platform() === 'win32') {
-    wrapper = `start ${cmd} %*`
+    wrapper = `${cmd} %*`
     filename = `${tool.name}.bat`
   } else {
-    header = '#!/usr/bin/env bash'
-    wrapper = `exec -a ${tool.name} ${cmd} "$@"\n`
+    header = `#!/usr/bin/env bash${os.EOL}`
+    wrapper = `exec -a ${tool.name} ${cmd} "$@"`
   }
 
-  const script = `${header}${os.EOL}${wrapper}${os.EOL}`
+  const script = `${header}${wrapper}${os.EOL}`
   const scriptPath = path.join(tool.installPath, filename)
 
   await fs.promises.writeFile(scriptPath, script, {mode: 0o555})
 
-  core.info(`Successfully created executable at ${scriptPath}`)
+  core.info(`Successfully created wrapper at ${scriptPath}`)
 }
 
 async function getInfoFromDist(
