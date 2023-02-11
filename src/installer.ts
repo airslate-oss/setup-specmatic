@@ -405,7 +405,7 @@ function releasesToSpecmaticVersions(
       version: release.tag_name,
       stable: true,
       files
-    } as unknown as ISpecmaticVersion)
+    } as ISpecmaticVersion)
   }
 
   return manifest
