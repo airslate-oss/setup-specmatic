@@ -86,7 +86,7 @@ describe('setup-specmatic', () => {
     cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
-    getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>jsonData)
+    getSpy.mockImplementation(() => <im.GithubRelease[] | null>jsonData)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
       // process.stderr.write(`write: ${line}\n`)
