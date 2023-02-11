@@ -32,6 +32,7 @@ describe('setup-specmatic', () => {
   let readFileSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
   let getManifestSpy: jest.SpyInstance
+  let getAllVersionsSpy: jest.SpyInstance
 
   beforeAll(async () => {
     // Stub out ENV file functionality so we can verify it writes
@@ -73,6 +74,7 @@ describe('setup-specmatic', () => {
     cacheSpy = jest.spyOn(tc, 'cacheFile')
     getSpy = jest.spyOn(im, 'getVersionsDist')
     getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
+    getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
     // io
     existsSpy = jest.spyOn(fs, 'existsSync')
@@ -445,6 +447,48 @@ describe('setup-specmatic', () => {
       expect(logSpy).toHaveBeenCalledWith(
         `Successfully set up Specmatic version ${versionSpec}`
       )
+    })
+
+    it('fallback to dist if manifest is not available', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
+
+      const versionSpec = '0.51'
+
+      process.env['GITHUB_PATH'] = ''
+
+      inputs['specmatic-version'] = versionSpec
+      inputs['check-latest'] = true
+      inputs['token'] = 'faketoken'
+
+      findSpy.mockImplementation(() => '')
+      getManifestSpy.mockImplementation(() => {
+        throw new Error('Unable to download manifest')
+      })
+
+      getAllVersionsSpy.mockImplementationOnce(() => undefined)
+
+      dlSpy.mockImplementation(async () => '/some/temp/path')
+      let toolPath = path.normalize('/cache/specmatic/0.51.0/x64')
+      cacheSpy.mockImplementation(async () => toolPath)
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith(
+        `Failed to resolve version ${versionSpec} from manifest`
+      )
+      expect(dlSpy).toHaveBeenCalled()
+      expect(logSpy).toHaveBeenCalledWith(
+        'Unable to resolve a version from the manifest...'
+      )
+      expect(logSpy).toHaveBeenCalledWith(
+        `Failed to resolve version ${versionSpec} from manifest`
+      )
+      expect(logSpy).toHaveBeenCalledWith(
+        `Attempting to download ${versionSpec}...`
+      )
+
+      expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
     })
   })
 
