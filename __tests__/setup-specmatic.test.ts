@@ -457,6 +457,8 @@ describe('setup-specmatic', () => {
 
     it('reads version from .specmatic-version', async () => {
       inputs['specmatic-version-file'] = '.specmatic-version'
+      os.platform = 'linux'
+      os.arch = 'x64'
 
       existsSpy.mockImplementation(() => true)
       readFileSpy.mockImplementation(() => Buffer.from(versionFileContents))
@@ -469,6 +471,8 @@ describe('setup-specmatic', () => {
     })
 
     it('is overwritten by specmatic-version', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
       inputs['specmatic-version'] = '0.36.1'
       inputs['specmatic-version-file'] = '.specmatic-version'
 
