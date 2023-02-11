@@ -6,12 +6,8 @@ import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
-const jsonData = JSON.parse(
-  fs.readFileSync('./__tests__/data/specmatic-releases.json', 'utf-8')
-)
-const testManifest = JSON.parse(
-  fs.readFileSync('./__tests__/data/versions-manifest.json', 'utf-8')
-)
+import jsonData from './data/specmatic-releases.json'
+import testManifest from './data/versions-manifest.json'
 
 const win32Join = path.win32.join
 const posixJoin = path.posix.join
