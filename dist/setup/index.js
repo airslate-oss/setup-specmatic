@@ -9709,7 +9709,7 @@ var StableReleaseAlias;
 /***/ }),
 
 /***/ 2574:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ (function(module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -9946,7 +9946,8 @@ function findMatch(versionSpec, arch = os_1.default.arch()) {
         let result;
         let match;
         const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
-        const releases = yield getVersionsDist(dlUrl);
+        // eslint-disable-next-line import/no-commonjs
+        const releases = yield module.exports.getVersionsDist(dlUrl);
         if (!releases) {
             throw new Error(`Specmatic releases url did not return results`);
         }
