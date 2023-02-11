@@ -6,12 +6,8 @@ import path from 'path'
 import * as main from '../src/main'
 import * as im from '../src/installer'
 
-const jsonData = JSON.parse(
-  fs.readFileSync('./__tests__/data/specmatic-releases.json', 'utf-8')
-)
-const testManifest = JSON.parse(
-  fs.readFileSync('./__tests__/data/versions-manifest.json', 'utf-8')
-)
+import jsonData from './data/specmatic-releases.json'
+import testManifest from './data/versions-manifest.json'
 
 const win32Join = path.win32.join
 const posixJoin = path.posix.join
@@ -36,6 +32,7 @@ describe('setup-specmatic', () => {
   let readFileSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
   let getManifestSpy: jest.SpyInstance
+  let getAllVersionsSpy: jest.SpyInstance
 
   beforeAll(async () => {
     // Stub out ENV file functionality so we can verify it writes
@@ -77,6 +74,7 @@ describe('setup-specmatic', () => {
     cacheSpy = jest.spyOn(tc, 'cacheFile')
     getSpy = jest.spyOn(im, 'getVersionsDist')
     getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
+    getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
     // io
     existsSpy = jest.spyOn(fs, 'existsSync')
@@ -90,7 +88,7 @@ describe('setup-specmatic', () => {
     cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
-    getSpy.mockImplementation(() => <im.ISpecmaticVersion[] | null>jsonData)
+    getSpy.mockImplementation(() => <im.GithubRelease[] | null>jsonData)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
       // process.stderr.write(`write: ${line}\n`)
@@ -450,6 +448,48 @@ describe('setup-specmatic', () => {
         `Successfully set up Specmatic version ${versionSpec}`
       )
     })
+
+    it('fallback to dist if manifest is not available', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
+
+      const versionSpec = '0.51'
+
+      process.env['GITHUB_PATH'] = ''
+
+      inputs['specmatic-version'] = versionSpec
+      inputs['check-latest'] = true
+      inputs['token'] = 'faketoken'
+
+      findSpy.mockImplementation(() => '')
+      getManifestSpy.mockImplementation(() => {
+        throw new Error('Unable to download manifest')
+      })
+
+      getAllVersionsSpy.mockImplementationOnce(() => undefined)
+
+      dlSpy.mockImplementation(async () => '/some/temp/path')
+      let toolPath = path.normalize('/cache/specmatic/0.51.0/x64')
+      cacheSpy.mockImplementation(async () => toolPath)
+
+      await main.run()
+
+      expect(logSpy).toHaveBeenCalledWith(
+        `Failed to resolve version ${versionSpec} from manifest`
+      )
+      expect(dlSpy).toHaveBeenCalled()
+      expect(logSpy).toHaveBeenCalledWith(
+        'Unable to resolve a version from the manifest...'
+      )
+      expect(logSpy).toHaveBeenCalledWith(
+        `Failed to resolve version ${versionSpec} from manifest`
+      )
+      expect(logSpy).toHaveBeenCalledWith(
+        `Attempting to download ${versionSpec}...`
+      )
+
+      expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
+    })
   })
 
   describe('specmatic-version-file', () => {
@@ -457,6 +497,8 @@ describe('setup-specmatic', () => {
 
     it('reads version from .specmatic-version', async () => {
       inputs['specmatic-version-file'] = '.specmatic-version'
+      os.platform = 'linux'
+      os.arch = 'x64'
 
       existsSpy.mockImplementation(() => true)
       readFileSpy.mockImplementation(() => Buffer.from(versionFileContents))
@@ -469,6 +511,8 @@ describe('setup-specmatic', () => {
     })
 
     it('is overwritten by specmatic-version', async () => {
+      os.platform = 'linux'
+      os.arch = 'x64'
       inputs['specmatic-version'] = '0.36.1'
       inputs['specmatic-version-file'] = '.specmatic-version'
 

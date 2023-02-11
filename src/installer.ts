@@ -312,7 +312,10 @@ export async function findMatch(
 
   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
 
-  const releases: GithubRelease[] | null = await getVersionsDist(dlUrl)
+  // eslint-disable-next-line import/no-commonjs
+  const releases: GithubRelease[] | null = await module.exports.getVersionsDist(
+    dlUrl
+  )
   if (!releases) {
     throw new Error(`Specmatic releases url did not return results`)
   }
@@ -405,7 +408,7 @@ function releasesToSpecmaticVersions(
       version: release.tag_name,
       stable: true,
       files
-    } as unknown as ISpecmaticVersion)
+    } as ISpecmaticVersion)
   }
 
   return manifest
