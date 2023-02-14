@@ -52,7 +52,7 @@ steps:
   - uses: actions/checkout@v3
   - uses: airslate-oss/setup-specmatic@v1
     with:
-      specmatic-version: '>=0.59.0'
+      specmatic-version: '>=0.61.0'
   - run: specmatic --version
 ```
 
@@ -105,7 +105,7 @@ steps:
   - uses: airslate-oss/setup-specmatic@v1
     with:
       # The Specmatic version to download (if necessary) and use.
-      specmatic-version: 0.59.0
+      specmatic-version: 0.61.0
   - run: specmatic test --testBaseURL='http://127.0.0.1:8030'
 ```
 
@@ -135,13 +135,13 @@ steps:
 If `stable` is provided, action will get the latest stable version from the
 [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) repository manifest.
 
-If `oldstable` is provided, when current release is 0.59.x, action will resolve version as 0.58.x, where x is the latest
+If `oldstable` is provided, when current release is 0.61.x, action will resolve version as 0.60.x, where x is the latest
 patch release.
 
 #### Getting Specmatic version from the version file
 
 The `specmatic-version-file` input accepts a path to a version file that contains the version of Specmatic to be used by
-a project. The version file may contain only major and minor (e.g. 0.59) tags. The action will search for the latest
+a project. The version file may contain only major and minor (e.g. 0.61) tags. The action will search for the latest
 available patch version sequentially in the runner's directory with the cached tools, in the
 [versions-manifest.json](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) file or
 at the specmatic repo.
@@ -161,7 +161,7 @@ steps:
 
 Example of the `.specmatic-version` file:
 ```
-0.59
+0.61
 ```
 
 #### Matrix testing
@@ -174,7 +174,7 @@ jobs:
 
     strategy:
       matrix:
-        specmatic: [ 0.40.0, 0.59.0 ]
+        specmatic: [ 0.59.0, 0.60.0, 0.61.0 ]
 
     steps:
       - name: Checkout code
