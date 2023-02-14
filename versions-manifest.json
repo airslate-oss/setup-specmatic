@@ -1,5 +1,30 @@
 [
   {
+    "version": "0.61.0",
+    "stable": true,
+    "release_url": "https://github.com/znsio/specmatic/releases/tag/0.61.0",
+    "files": [
+      {
+        "filename": "specmatic.jar",
+        "arch": "x64",
+        "platform": "darwin",
+        "download_url": "https://github.com/znsio/specmatic/releases/download/0.61.0/specmatic.jar"
+      },
+      {
+        "filename": "specmatic.jar",
+        "arch": "x64",
+        "platform": "linux",
+        "download_url": "https://github.com/znsio/specmatic/releases/download/0.61.0/specmatic.jar"
+      },
+      {
+        "filename": "specmatic.jar",
+        "arch": "x64",
+        "platform": "win32",
+        "download_url": "https://github.com/znsio/specmatic/releases/download/0.61.0/specmatic.jar"
+      }
+    ]
+  },
+  {
     "version": "0.60.0",
     "stable": true,
     "release_url": "https://github.com/znsio/specmatic/releases/tag/0.60.0",
