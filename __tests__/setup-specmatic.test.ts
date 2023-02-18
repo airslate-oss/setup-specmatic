@@ -72,7 +72,7 @@ describe('setup-specmatic', () => {
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
-    getSpy = jest.spyOn(im, 'getVersionsDist')
+    getSpy = jest.spyOn(im, 'getGithubReleases')
     getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
     getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
@@ -119,7 +119,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.58.0')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.58.0/specmatic.jar'
     )
@@ -133,7 +132,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
     )
@@ -147,7 +145,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
     )
