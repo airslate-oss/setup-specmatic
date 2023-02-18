@@ -329,12 +329,14 @@ function releasesToToolRelease(releases: GithubRelease[]): tc.IToolRelease[] {
   const files: tc.IToolReleaseFile[] = []
 
   for (const release of releases) {
-    files.push({
-      filename: 'specmatic.jar',
-      platform: 'any',
-      arch: 'x64',
-      download_url: release.assets[0].browser_download_url
-    })
+    for (const platform of ['darwin', 'linux', 'win32']) {
+      files.push({
+        filename: 'specmatic.jar',
+        platform,
+        arch: 'x64',
+        download_url: release.assets[0].browser_download_url
+      })
+    }
 
     manifest.push({
       version: release.tag_name,
