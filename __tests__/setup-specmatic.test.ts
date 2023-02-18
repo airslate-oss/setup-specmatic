@@ -7,7 +7,6 @@ import * as main from '../src/main'
 import * as im from '../src/installer'
 
 import jsonData from './data/specmatic-releases.json'
-import testManifest from './data/versions-manifest.json'
 
 const win32Join = path.win32.join
 const posixJoin = path.posix.join
@@ -477,9 +476,9 @@ describe('setup-specmatic', () => {
 
         await main.run()
 
-        const releaseIndex = alias === 'stable' ? 0 : 1
+        const version = alias === 'stable' ? '0.59.0' : '0.58.0'
         expect(logSpy).toHaveBeenCalledWith(
-          `${alias} version resolved as ${testManifest[releaseIndex].version}`
+          `${alias} version resolved as ${version}`
         )
       }
     )
