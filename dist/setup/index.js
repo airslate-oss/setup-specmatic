@@ -9974,8 +9974,8 @@ function makeSemver(version) {
 exports.makeSemver = makeSemver;
 function releasesToToolRelease(releases) {
     const manifest = [];
-    const files = [];
     for (const release of releases) {
+        const files = [];
         for (const platform of ['darwin', 'linux', 'win32']) {
             files.push({
                 filename: 'specmatic.jar',
@@ -10024,7 +10024,8 @@ function resolveStableVersionInput(versionSpec, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         const releases = manifest
             .map(item => {
-            return item.version;
+            const index = item.files.findIndex(i => i.platform === os_1.default.platform());
+            return index === -1 ? '' : item.version;
         })
             .filter(item => !!item && !semver.prerelease(item));
         core.debug(`resolved releases: ${JSON.stringify(releases)}`);

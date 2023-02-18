@@ -326,9 +326,9 @@ export function makeSemver(version: string): string {
 
 function releasesToToolRelease(releases: GithubRelease[]): tc.IToolRelease[] {
   const manifest: tc.IToolRelease[] = []
-  const files: tc.IToolReleaseFile[] = []
 
   for (const release of releases) {
+    const files: tc.IToolReleaseFile[] = []
     for (const platform of ['darwin', 'linux', 'win32']) {
       files.push({
         filename: 'specmatic.jar',
@@ -386,7 +386,8 @@ export async function resolveStableVersionInput(
 ): Promise<string | undefined> {
   const releases = manifest
     .map(item => {
-      return item.version
+      const index = item.files.findIndex(i => i.platform === os.platform())
+      return index === -1 ? '' : item.version
     })
     .filter(item => !!item && !semver.prerelease(item))
 
