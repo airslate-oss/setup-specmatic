@@ -14,19 +14,6 @@ import {OutgoingHttpHeaders} from 'http'
 import fs from 'fs'
 import os from 'os'
 
-// export interface ISpecmaticVersionFile {
-//   filename: string
-//   os: string
-//   arch: string
-//   platform: string
-// }
-
-// export interface ISpecmaticVersion {
-//   version: string
-//   stable: boolean
-//   files: ISpecmaticVersionFile[]
-// }
-
 export enum StableReleaseAlias {
   Stable = 'stable',
   OldStable = 'oldstable'
@@ -231,53 +218,6 @@ async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
   core.info(`Successfully created wrapper at ${scriptPath}`)
 }
 
-// export async function findMatch(
-//   versionSpec: string,
-//   arch = os.arch()
-// ): Promise<ISpecmaticVersion | undefined> {
-//   let result: ISpecmaticVersion | undefined
-//   let match: ISpecmaticVersion | undefined
-
-//   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
-
-//   // eslint-disable-next-line import/no-commonjs
-//   const releases: GithubRelease[] | null = await module.exports.getVersionsDist(
-//     dlUrl
-//   )
-//   if (!releases) {
-//     throw new Error(`Specmatic releases url did not return results`)
-//   }
-
-//   const candidates: ISpecmaticVersion[] = releasesToSpecmaticVersions(releases)
-//   let specmaticFile: ISpecmaticVersionFile | undefined
-
-//   for (const candidate of candidates) {
-//     const version = makeSemver(candidate.version)
-//     core.debug(`check ${version} satisfies ${versionSpec}`)
-
-//     if (semver.satisfies(version, versionSpec)) {
-//       specmaticFile = candidate.files.find(file => {
-//         core.debug(`${file.arch}===${arch} && ${file.os}===${os.platform()}`)
-//         return file.arch === arch && file.os === os.platform()
-//       })
-
-//       if (specmaticFile) {
-//         core.debug(`matched ${candidate.version}`)
-//         match = candidate
-//         break
-//       }
-//     }
-//   }
-
-//   if (match && specmaticFile) {
-//     // clone since we're mutating the file list to be only the file that matches
-//     result = Object.assign({}, match)
-//     result.files = [specmaticFile]
-//   }
-
-//   return result
-// }
-
 export async function getGithubReleases(
   dlUrl: string,
   auth?: string
@@ -347,32 +287,6 @@ function releasesToToolRelease(releases: GithubRelease[]): tc.IToolRelease[] {
 
   return manifest
 }
-
-// function releasesToSpecmaticVersions(
-//   releases: GithubRelease[]
-// ): ISpecmaticVersion[] {
-//   const manifest: ISpecmaticVersion[] = []
-//   const files: ISpecmaticVersionFile[] = []
-
-//   for (const platform of ['darwin', 'linux', 'win32']) {
-//     files.push({
-//       filename: 'specmatic.jar',
-//       os: platform,
-//       arch: 'x64',
-//       platform
-//     } as ISpecmaticVersionFile)
-//   }
-
-//   for (const release of releases) {
-//     manifest.push({
-//       version: release.tag_name,
-//       stable: true,
-//       files
-//     } as ISpecmaticVersion)
-//   }
-
-//   return manifest
-// }
 
 export function parseSpecmaticVersionFile(versionFilePath: string): string {
   const contents = fs.readFileSync(versionFilePath).toString()

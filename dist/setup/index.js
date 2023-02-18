@@ -9741,17 +9741,6 @@ const semver = __importStar(__nccwpck_require__(1383));
 const httpm = __importStar(__nccwpck_require__(6255));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-// export interface ISpecmaticVersionFile {
-//   filename: string
-//   os: string
-//   arch: string
-//   platform: string
-// }
-// export interface ISpecmaticVersion {
-//   version: string
-//   stable: boolean
-//   files: ISpecmaticVersionFile[]
-// }
 var StableReleaseAlias;
 (function (StableReleaseAlias) {
     StableReleaseAlias["Stable"] = "stable";
@@ -9897,44 +9886,6 @@ function writeJarScript(tool) {
         core.info(`Successfully created wrapper at ${scriptPath}`);
     });
 }
-// export async function findMatch(
-//   versionSpec: string,
-//   arch = os.arch()
-// ): Promise<ISpecmaticVersion | undefined> {
-//   let result: ISpecmaticVersion | undefined
-//   let match: ISpecmaticVersion | undefined
-//   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
-//   // eslint-disable-next-line import/no-commonjs
-//   const releases: GithubRelease[] | null = await module.exports.getVersionsDist(
-//     dlUrl
-//   )
-//   if (!releases) {
-//     throw new Error(`Specmatic releases url did not return results`)
-//   }
-//   const candidates: ISpecmaticVersion[] = releasesToSpecmaticVersions(releases)
-//   let specmaticFile: ISpecmaticVersionFile | undefined
-//   for (const candidate of candidates) {
-//     const version = makeSemver(candidate.version)
-//     core.debug(`check ${version} satisfies ${versionSpec}`)
-//     if (semver.satisfies(version, versionSpec)) {
-//       specmaticFile = candidate.files.find(file => {
-//         core.debug(`${file.arch}===${arch} && ${file.os}===${os.platform()}`)
-//         return file.arch === arch && file.os === os.platform()
-//       })
-//       if (specmaticFile) {
-//         core.debug(`matched ${candidate.version}`)
-//         match = candidate
-//         break
-//       }
-//     }
-//   }
-//   if (match && specmaticFile) {
-//     // clone since we're mutating the file list to be only the file that matches
-//     result = Object.assign({}, match)
-//     result.files = [specmaticFile]
-//   }
-//   return result
-// }
 function getGithubReleases(dlUrl, auth) {
     return __awaiter(this, void 0, void 0, function* () {
         const http = new httpm.HttpClient('setup-specmatic', [], {
@@ -9992,28 +9943,6 @@ function releasesToToolRelease(releases) {
     }
     return manifest;
 }
-// function releasesToSpecmaticVersions(
-//   releases: GithubRelease[]
-// ): ISpecmaticVersion[] {
-//   const manifest: ISpecmaticVersion[] = []
-//   const files: ISpecmaticVersionFile[] = []
-//   for (const platform of ['darwin', 'linux', 'win32']) {
-//     files.push({
-//       filename: 'specmatic.jar',
-//       os: platform,
-//       arch: 'x64',
-//       platform
-//     } as ISpecmaticVersionFile)
-//   }
-//   for (const release of releases) {
-//     manifest.push({
-//       version: release.tag_name,
-//       stable: true,
-//       files
-//     } as ISpecmaticVersion)
-//   }
-//   return manifest
-// }
 function parseSpecmaticVersionFile(versionFilePath) {
     const contents = fs_1.default.readFileSync(versionFilePath).toString();
     const match = contents.match(/^(\d+(\.\d+)*)/m);
