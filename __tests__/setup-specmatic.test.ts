@@ -31,7 +31,6 @@ describe('setup-specmatic', () => {
   let existsSpy: jest.SpyInstance
   let readFileSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
-  let getManifestSpy: jest.SpyInstance
   let getAllVersionsSpy: jest.SpyInstance
 
   beforeAll(async () => {
@@ -73,16 +72,12 @@ describe('setup-specmatic', () => {
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
     getSpy = jest.spyOn(im, 'getGithubReleases')
-    getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
     getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
     // io
     existsSpy = jest.spyOn(fs, 'existsSync')
     readFileSpy = jest.spyOn(fs, 'readFileSync')
     writeFileSpy = jest.spyOn(fs.promises, 'writeFile')
-
-    // gets
-    getManifestSpy.mockImplementation(() => <tc.IToolRelease[]>testManifest)
 
     // writes
     cnSpy = jest.spyOn(process.stdout, 'write')
