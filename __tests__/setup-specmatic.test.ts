@@ -267,6 +267,7 @@ describe('setup-specmatic', () => {
     let versionSpec = '0.37.0'
 
     inputs['specmatic-version'] = versionSpec
+    inputs['token'] = 'faketoken'
 
     let expectedUrl =
       'https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar'
@@ -299,6 +300,7 @@ describe('setup-specmatic', () => {
     let versionSpec = '0.35'
 
     inputs['specmatic-version'] = versionSpec
+    inputs['token'] = 'faketoken'
 
     let expectedUrl =
       'https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar'
