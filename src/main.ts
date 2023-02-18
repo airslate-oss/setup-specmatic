@@ -10,7 +10,6 @@ import * as io from '@actions/io'
 import * as installer from './installer'
 import cp from 'child_process'
 import fs from 'fs'
-import os from 'os'
 
 export async function run(): Promise<void> {
   try {
@@ -19,7 +18,6 @@ export async function run(): Promise<void> {
     // If not supplied then problem matchers will still be setup.  Useful for self-hosted.
     //
     const versionSpec = resolveVersionInput()
-    const arch = os.arch()
 
     core.info(`Setup specmatic version spec ${versionSpec}`)
 
@@ -31,8 +29,7 @@ export async function run(): Promise<void> {
       const installDir = await installer.getSpecmatic(
         versionSpec,
         checkLatest,
-        auth,
-        arch
+        auth
       )
 
       core.addPath(installDir)

@@ -7,7 +7,6 @@ import * as main from '../src/main'
 import * as im from '../src/installer'
 
 import jsonData from './data/specmatic-releases.json'
-import testManifest from './data/versions-manifest.json'
 
 const win32Join = path.win32.join
 const posixJoin = path.posix.join
@@ -31,7 +30,6 @@ describe('setup-specmatic', () => {
   let existsSpy: jest.SpyInstance
   let readFileSpy: jest.SpyInstance
   let writeFileSpy: jest.SpyInstance
-  let getManifestSpy: jest.SpyInstance
   let getAllVersionsSpy: jest.SpyInstance
 
   beforeAll(async () => {
@@ -72,17 +70,13 @@ describe('setup-specmatic', () => {
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
-    getSpy = jest.spyOn(im, 'getVersionsDist')
-    getManifestSpy = jest.spyOn(tc, 'getManifestFromRepo')
+    getSpy = jest.spyOn(im, 'getGithubReleases')
     getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
     // io
     existsSpy = jest.spyOn(fs, 'existsSync')
     readFileSpy = jest.spyOn(fs, 'readFileSync')
     writeFileSpy = jest.spyOn(fs.promises, 'writeFile')
-
-    // gets
-    getManifestSpy.mockImplementation(() => <tc.IToolRelease[]>testManifest)
 
     // writes
     cnSpy = jest.spyOn(process.stdout, 'write')
@@ -99,7 +93,7 @@ describe('setup-specmatic', () => {
     })
     dbgSpy.mockImplementation(msg => {
       // uncomment to see debug output
-      // process.stderr.write(`${msg}\n`)
+      // process.stderr.write(`debug: ${msg}\n`)
     })
   })
 
@@ -119,7 +113,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.58.0')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.58.0/specmatic.jar'
     )
@@ -133,7 +126,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
     )
@@ -147,7 +139,6 @@ describe('setup-specmatic', () => {
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
-    expect(match!.type).toBe('manifest')
     expect(match!.downloadUrl).toBe(
       'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
     )
@@ -224,7 +215,9 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(dlSpy).toHaveBeenCalledWith(
-      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar',
+      undefined,
+      undefined
     )
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
@@ -246,7 +239,9 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(dlSpy).toHaveBeenCalledWith(
-      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar',
+      undefined,
+      undefined
     )
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
@@ -261,7 +256,7 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(cnSpy).toHaveBeenCalledWith(
-      `::error::Unable to find Specmatic version '99.99.9' for platform linux and architecture x64.${osm.EOL}`
+      `::error::Unable to find Specmatic version '99.99.9'.${osm.EOL}`
     )
   })
 
@@ -327,37 +322,6 @@ describe('setup-specmatic', () => {
     )
 
     expect(logSpy).toHaveBeenCalledWith('Added specmatic to the path')
-    expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
-  })
-
-  it('falls back to a version from specmatic dist', async () => {
-    os.platform = 'linux'
-    os.arch = 'x64'
-
-    let versionSpec = '0.33.0'
-
-    inputs['specmatic-version'] = versionSpec
-    inputs['token'] = 'faketoken'
-
-    findSpy.mockImplementation(() => '')
-
-    dlSpy.mockImplementation(async () => '/some/temp/path')
-    let toolPath = path.normalize('/cache/specmatic/0.33.0/x64')
-    cacheSpy.mockImplementation(async () => toolPath)
-    writeFileSpy.mockImplementation()
-
-    await main.run()
-
-    expect(logSpy).toHaveBeenCalledWith('Setup specmatic version spec 0.33.0')
-    expect(findSpy).toHaveBeenCalled()
-    expect(logSpy).toHaveBeenCalledWith('Attempting to download 0.33.0...')
-    expect(dlSpy).toHaveBeenCalled()
-    expect(dbgSpy).toHaveBeenCalledWith('matching 0.33.0...')
-    expect(logSpy).toHaveBeenCalledWith(
-      'Not found in manifest.  Falling back to download directly from Specmatic'
-    )
-    expect(logSpy).toHaveBeenCalledWith(`Install from dist`)
-    expect(logSpy).toHaveBeenCalledWith(`Added specmatic to the path`)
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
 
@@ -448,48 +412,6 @@ describe('setup-specmatic', () => {
         `Successfully set up Specmatic version ${versionSpec}`
       )
     })
-
-    it('fallback to dist if manifest is not available', async () => {
-      os.platform = 'linux'
-      os.arch = 'x64'
-
-      const versionSpec = '0.51'
-
-      process.env['GITHUB_PATH'] = ''
-
-      inputs['specmatic-version'] = versionSpec
-      inputs['check-latest'] = true
-      inputs['token'] = 'faketoken'
-
-      findSpy.mockImplementation(() => '')
-      getManifestSpy.mockImplementation(() => {
-        throw new Error('Unable to download manifest')
-      })
-
-      getAllVersionsSpy.mockImplementationOnce(() => undefined)
-
-      dlSpy.mockImplementation(async () => '/some/temp/path')
-      let toolPath = path.normalize('/cache/specmatic/0.51.0/x64')
-      cacheSpy.mockImplementation(async () => toolPath)
-
-      await main.run()
-
-      expect(logSpy).toHaveBeenCalledWith(
-        `Failed to resolve version ${versionSpec} from manifest`
-      )
-      expect(dlSpy).toHaveBeenCalled()
-      expect(logSpy).toHaveBeenCalledWith(
-        'Unable to resolve a version from the manifest...'
-      )
-      expect(logSpy).toHaveBeenCalledWith(
-        `Failed to resolve version ${versionSpec} from manifest`
-      )
-      expect(logSpy).toHaveBeenCalledWith(
-        `Attempting to download ${versionSpec}...`
-      )
-
-      expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
-    })
   })
 
   describe('specmatic-version-file', () => {
@@ -556,9 +478,9 @@ describe('setup-specmatic', () => {
 
         await main.run()
 
-        const releaseIndex = alias === 'stable' ? 0 : 1
+        const version = alias === 'stable' ? '0.59.0' : '0.58.0'
         expect(logSpy).toHaveBeenCalledWith(
-          `${alias} version resolved as ${testManifest[releaseIndex].version}`
+          `${alias} version resolved as ${version}`
         )
       }
     )

@@ -9686,28 +9686,6 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 9042:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-// This file is part of the setup-specmatic.
-//
-// Copyright (c) 2023 airSlate, Inc.
-//
-// For the full copyright and license information, please view
-// the LICENSE file that was distributed with this source code.
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.StableReleaseAlias = void 0;
-var StableReleaseAlias;
-(function (StableReleaseAlias) {
-    StableReleaseAlias["Stable"] = "stable";
-    StableReleaseAlias["OldStable"] = "oldstable";
-})(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
-
-
-/***/ }),
-
 /***/ 2574:
 /***/ (function(module, exports, __nccwpck_require__) {
 
@@ -9755,7 +9733,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveStableVersionInput = exports.parseSpecmaticVersionFile = exports.makeSemver = exports.getVersionsDist = exports.findMatch = exports.getManifest = exports.getInfoFromManifest = exports.getSpecmatic = void 0;
+exports.resolveStableVersionInput = exports.parseSpecmaticVersionFile = exports.makeSemver = exports.getGithubReleases = exports.getManifest = exports.getInfoFromManifest = exports.getSpecmatic = exports.StableReleaseAlias = void 0;
 const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
@@ -9763,56 +9741,52 @@ const semver = __importStar(__nccwpck_require__(1383));
 const httpm = __importStar(__nccwpck_require__(6255));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 const os_1 = __importDefault(__nccwpck_require__(2037));
-const constants_1 = __nccwpck_require__(9042);
-function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()) {
+var StableReleaseAlias;
+(function (StableReleaseAlias) {
+    StableReleaseAlias["Stable"] = "stable";
+    StableReleaseAlias["OldStable"] = "oldstable";
+})(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
+function getSpecmatic(versionSpec, checkLatest, auth) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const osPlat = os_1.default.platform();
         let manifest;
-        if (versionSpec === constants_1.StableReleaseAlias.Stable ||
-            versionSpec === constants_1.StableReleaseAlias.OldStable) {
+        if (versionSpec === StableReleaseAlias.Stable ||
+            versionSpec === StableReleaseAlias.OldStable) {
             manifest = yield getManifest(auth);
-            let stableVersion = yield resolveStableVersionInput(versionSpec, arch, osPlat, manifest);
+            const stableVersion = yield resolveStableVersionInput(versionSpec, manifest);
             if (!stableVersion) {
-                stableVersion = yield resolveStableVersionDist(versionSpec, arch, osPlat);
-                if (!stableVersion) {
-                    throw new Error(`Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`);
-                }
+                throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
             }
             core.info(`${versionSpec} version resolved as ${stableVersion}`);
             versionSpec = stableVersion;
         }
         if (checkLatest) {
             core.info('Attempting to resolve the latest version from the manifest...');
-            const resolvedVersion = yield resolveVersionFromManifest(versionSpec, true, auth, arch, manifest);
+            const resolvedVersion = yield resolveVersionFromManifest(versionSpec, true, auth, manifest);
             if (resolvedVersion) {
                 versionSpec = resolvedVersion;
                 core.info(`Resolved as '${versionSpec}'`);
             }
-            else {
-                core.info(`Failed to resolve version ${versionSpec} from manifest`);
-            }
         }
         // check cache
-        const toolPath = tc.find('specmatic', versionSpec, arch);
+        const toolPath = tc.find('specmatic', versionSpec);
         // If not found in cache, download
         if (toolPath) {
             core.info(`Found in cache: ${toolPath}`);
             return toolPath;
         }
         core.info(`Attempting to download ${versionSpec}...`);
-        let downloadPath = '';
         let info = null;
         //
         // Try download using manifest file
         //
         try {
-            info = yield getInfoFromManifest(versionSpec, true, auth, arch, manifest);
+            info = yield getInfoFromManifest(versionSpec, true, auth, manifest);
             if (info) {
-                downloadPath = yield installSpecmaticVersion(info, auth, arch);
+                return yield installSpecmaticVersion(info, auth);
             }
             else {
-                core.info('Not found in manifest.  Falling back to download directly from Specmatic');
+                throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
             }
         }
         catch (err) {
@@ -9824,32 +9798,15 @@ function getSpecmatic(versionSpec, checkLatest, auth, arch = os_1.default.arch()
                 core.info(err.message);
             }
             core.debug((_a = err.stack) !== null && _a !== void 0 ? _a : '');
-            core.info('Falling back to download directly from Specmatic');
+            throw err;
         }
-        //
-        // Download from Specmatic releases
-        //
-        if (!downloadPath) {
-            info = yield getInfoFromDist(versionSpec, arch);
-            if (!info) {
-                throw new Error(`Unable to find Specmatic version '${versionSpec}' for platform ${osPlat} and architecture ${arch}.`);
-            }
-            try {
-                core.info('Install from dist');
-                downloadPath = yield installSpecmaticVersion(info, auth, arch);
-            }
-            catch (err) {
-                throw new Error(`Failed to download version ${versionSpec}: ${err}`);
-            }
-        }
-        return downloadPath;
     });
 }
 exports.getSpecmatic = getSpecmatic;
-function resolveVersionFromManifest(versionSpec, stable, auth, arch, manifest) {
+function resolveVersionFromManifest(versionSpec, stable, auth, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const info = yield getInfoFromManifest(versionSpec, stable, auth, arch, manifest);
+            const info = yield getInfoFromManifest(versionSpec, stable, auth, manifest);
             return info === null || info === void 0 ? void 0 : info.resolvedVersion;
         }
         catch (err) {
@@ -9860,19 +9817,19 @@ function resolveVersionFromManifest(versionSpec, stable, auth, arch, manifest) {
         }
     });
 }
-function installSpecmaticVersion(info, auth, arch) {
+function installSpecmaticVersion(info, auth) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}...`);
-        const downloadPath = yield tc.downloadTool(info.downloadUrl);
+        const downloadPath = yield tc.downloadTool(info.downloadUrl, undefined, auth);
         core.info(`Successfully download specmatic to ${downloadPath}`);
         core.info(`Adding to the cache...`);
-        info.installPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, makeSemver(info.resolvedVersion), arch);
+        info.installPath = yield tc.cacheFile(downloadPath, info.fileName, info.name, makeSemver(info.resolvedVersion));
         core.info(`Successfully cached specmatic to ${info.installPath}`);
         yield writeJarScript(info);
         return info.installPath;
     });
 }
-function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch(), manifest) {
+function getInfoFromManifest(versionSpec, stable, auth, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         let info = null;
         if (!manifest) {
@@ -9880,10 +9837,9 @@ function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch
             manifest = yield getManifest(auth);
         }
         core.debug(`matching ${versionSpec}...`);
-        const rel = yield tc.findFromManifest(versionSpec, stable, manifest, arch);
+        const rel = yield tc.findFromManifest(versionSpec, stable, manifest);
         if (rel && rel.files.length > 0) {
             info = {};
-            info.type = 'manifest';
             info.resolvedVersion = rel.version;
             info.downloadUrl = rel.files[0].download_url;
             info.fileName = rel.files[0].filename;
@@ -9896,8 +9852,15 @@ function getInfoFromManifest(versionSpec, stable, auth, arch = os_1.default.arch
 exports.getInfoFromManifest = getInfoFromManifest;
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug('Download manifest from @airslate-oss/setup-specmatic');
-        const manifest = tc.getManifestFromRepo('airslate-oss', 'setup-specmatic', auth, 'main');
+        const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
+        const releases = 
+        // eslint-disable-next-line import/no-commonjs
+        yield module.exports.getGithubReleases(dlUrl, auth);
+        if (!releases) {
+            throw new Error('Specmatic releases url did not return results');
+        }
+        core.debug('Create version manifest from releases info');
+        const manifest = releasesToToolRelease(releases);
         return manifest;
     });
 }
@@ -9923,71 +9886,22 @@ function writeJarScript(tool) {
         core.info(`Successfully created wrapper at ${scriptPath}`);
     });
 }
-function getInfoFromDist(versionSpec, arch) {
+function getGithubReleases(dlUrl, auth) {
     return __awaiter(this, void 0, void 0, function* () {
-        const version = yield findMatch(versionSpec, arch);
-        if (!version) {
-            core.debug(`${versionSpec} did'n match`);
-            return null;
-        }
-        const downloadUrl = `https://github.com/znsio/specmatic/releases/download/${version.version}/specmatic.jar`;
-        return {
-            type: 'dist',
-            downloadUrl,
-            resolvedVersion: versionSpec,
-            fileName: 'specmatic.jar',
-            installPath: '',
-            name: 'specmatic'
-        };
-    });
-}
-function findMatch(versionSpec, arch = os_1.default.arch()) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let result;
-        let match;
-        const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
-        // eslint-disable-next-line import/no-commonjs
-        const releases = yield module.exports.getVersionsDist(dlUrl);
-        if (!releases) {
-            throw new Error(`Specmatic releases url did not return results`);
-        }
-        const candidates = releasesToSpecmaticVersions(releases);
-        let specmaticFile;
-        for (const candidate of candidates) {
-            const version = makeSemver(candidate.version);
-            core.debug(`check ${version} satisfies ${versionSpec}`);
-            if (semver.satisfies(version, versionSpec)) {
-                specmaticFile = candidate.files.find(file => {
-                    core.debug(`${file.arch}===${arch} && ${file.os}===${os_1.default.platform()}`);
-                    return file.arch === arch && file.os === os_1.default.platform();
-                });
-                if (specmaticFile) {
-                    core.debug(`matched ${candidate.version}`);
-                    match = candidate;
-                    break;
-                }
-            }
-        }
-        if (match && specmaticFile) {
-            // clone since we're mutating the file list to be only the file that matches
-            result = Object.assign({}, match);
-            result.files = [specmaticFile];
-        }
-        return result;
-    });
-}
-exports.findMatch = findMatch;
-function getVersionsDist(dlUrl) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // this returns versions descending so latest is first
         const http = new httpm.HttpClient('setup-specmatic', [], {
             allowRedirects: true,
             maxRedirects: 3
         });
-        return (yield http.getJson(dlUrl)).result;
+        const headers = {};
+        if (auth) {
+            core.debug('set auth');
+            headers.authorization = auth;
+        }
+        // this returns versions descending so latest is first
+        return (yield http.getJson(dlUrl, headers)).result;
     });
 }
-exports.getVersionsDist = getVersionsDist;
+exports.getGithubReleases = getGithubReleases;
 // Convert the specmatic version syntax into semver for semver matching
 // 0.58.0 => 0.58.0
 // 0.59 => 0.59
@@ -10009,18 +9923,18 @@ function makeSemver(version) {
     return fullVersion;
 }
 exports.makeSemver = makeSemver;
-function releasesToSpecmaticVersions(releases) {
+function releasesToToolRelease(releases) {
     const manifest = [];
-    const files = [];
-    for (const platform of ['darwin', 'linux', 'win32']) {
-        files.push({
-            filename: 'specmatic.jar',
-            os: platform,
-            arch: 'x64',
-            platform
-        });
-    }
     for (const release of releases) {
+        const files = [];
+        for (const platform of ['darwin', 'linux', 'win32']) {
+            files.push({
+                filename: 'specmatic.jar',
+                platform,
+                arch: 'x64',
+                download_url: release.assets[0].browser_download_url
+            });
+        }
         manifest.push({
             version: release.tag_name,
             stable: true,
@@ -10035,28 +9949,15 @@ function parseSpecmaticVersionFile(versionFilePath) {
     return (match ? match[1] : '').trim();
 }
 exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
-function resolveStableVersionDist(versionSpec, arch, platform) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
-        const releases = yield getVersionsDist(dlUrl);
-        if (!releases) {
-            throw new Error(`Specmatic releases url did not return results`);
-        }
-        const candidates = releasesToSpecmaticVersions(releases);
-        const stableVersion = yield resolveStableVersionInput(versionSpec, arch, platform, candidates);
-        return stableVersion;
-    });
-}
-function resolveStableVersionInput(versionSpec, arch, platform, manifest) {
+function resolveStableVersionInput(versionSpec, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         const releases = manifest
             .map(item => {
-            const index = item.files.findIndex(i => i.arch === arch && i.platform === platform);
+            const index = item.files.findIndex(i => i.platform === os_1.default.platform());
             return index === -1 ? '' : item.version;
         })
             .filter(item => !!item && !semver.prerelease(item));
-        core.debug(`resolved releases: ${JSON.stringify(releases)}`);
-        if (versionSpec === constants_1.StableReleaseAlias.Stable) {
+        if (versionSpec === StableReleaseAlias.Stable) {
             return releases[0];
         }
         else {
@@ -10125,7 +10026,6 @@ const io = __importStar(__nccwpck_require__(7436));
 const installer = __importStar(__nccwpck_require__(2574));
 const child_process_1 = __importDefault(__nccwpck_require__(2081));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-const os_1 = __importDefault(__nccwpck_require__(2037));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -10134,13 +10034,12 @@ function run() {
             // If not supplied then problem matchers will still be setup.  Useful for self-hosted.
             //
             const versionSpec = resolveVersionInput();
-            const arch = os_1.default.arch();
             core.info(`Setup specmatic version spec ${versionSpec}`);
             if (versionSpec) {
                 const token = core.getInput('token');
                 const auth = !token ? undefined : `token ${token}`;
                 const checkLatest = core.getBooleanInput('check-latest');
-                const installDir = yield installer.getSpecmatic(versionSpec, checkLatest, auth, arch);
+                const installDir = yield installer.getSpecmatic(versionSpec, checkLatest, auth);
                 core.addPath(installDir);
                 core.info('Added specmatic to the path');
                 core.info(`Successfully set up Specmatic version ${versionSpec}`);
