@@ -26,7 +26,7 @@ The action offers:
 - Bug Fixes (including issues around version matching and semver)
 
 The action will first check the local cache for a version match.  If a version is not found locally, it will pull it from
-the `main` branch of the [setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json)
+the [releases](https://github.com/znsio/specmatic/releases) of the [specmatic](https://github.com/znsio/specmatic)
 repository. To change the default behavior, please use the [check-latest input](#check-latest-version).
 
 Supported OS architectures currently are:
@@ -133,7 +133,7 @@ steps:
 #### Using stable/oldstable aliases
 
 If `stable` is provided, action will get the latest stable version from the
-[setup-specmatic](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) repository manifest.
+[specmatic releases](https://github.com/znsio/specmatic/releases).
 
 If `oldstable` is provided, when current release is 0.61.x, action will resolve version as 0.60.x, where x is the latest
 patch release.
@@ -142,9 +142,8 @@ patch release.
 
 The `specmatic-version-file` input accepts a path to a version file that contains the version of Specmatic to be used by
 a project. The version file may contain only major and minor (e.g. 0.61) tags. The action will search for the latest
-available patch version sequentially in the runner's directory with the cached tools, in the
-[versions-manifest.json](https://github.com/airslate-oss/setup-specmatic/blob/main/versions-manifest.json) file or
-at the specmatic repo.
+available patch version sequentially in the runner's directory with the cached tools or at the
+[specmatic releases](https://github.com/znsio/specmatic/releases).
 
 If both the `specmatic-version` and the `specmatic-version-file` inputs are provided then the `specmatic-version` input
 is used.
