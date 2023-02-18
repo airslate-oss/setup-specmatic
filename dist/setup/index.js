@@ -9767,9 +9767,6 @@ function getSpecmatic(versionSpec, checkLatest, auth) {
                 versionSpec = resolvedVersion;
                 core.info(`Resolved as '${versionSpec}'`);
             }
-            else {
-                core.info(`Failed to resolve version ${versionSpec} from manifest`);
-            }
         }
         // check cache
         const toolPath = tc.find('specmatic', versionSpec);
@@ -9960,7 +9957,6 @@ function resolveStableVersionInput(versionSpec, manifest) {
             return index === -1 ? '' : item.version;
         })
             .filter(item => !!item && !semver.prerelease(item));
-        core.debug(`resolved releases: ${JSON.stringify(releases)}`);
         if (versionSpec === StableReleaseAlias.Stable) {
             return releases[0];
         }

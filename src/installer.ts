@@ -71,8 +71,6 @@ export async function getSpecmatic(
     if (resolvedVersion) {
       versionSpec = resolvedVersion
       core.info(`Resolved as '${versionSpec}'`)
-    } else {
-      core.info(`Failed to resolve version ${versionSpec} from manifest`)
     }
   }
 
@@ -309,7 +307,6 @@ export async function resolveStableVersionInput(
     })
     .filter(item => !!item && !semver.prerelease(item))
 
-  core.debug(`resolved releases: ${JSON.stringify(releases)}`)
   if (versionSpec === StableReleaseAlias.Stable) {
     return releases[0]
   } else {
