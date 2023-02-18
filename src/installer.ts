@@ -43,12 +43,13 @@ export async function getSpecmatic(
   checkLatest: boolean,
   auth: string | undefined
 ): Promise<string> {
-  const manifest: tc.IToolRelease[] = await getManifest(auth)
+  let manifest: tc.IToolRelease[] | undefined
 
   if (
     versionSpec === StableReleaseAlias.Stable ||
     versionSpec === StableReleaseAlias.OldStable
   ) {
+    manifest = await getManifest(auth)
     const stableVersion = await resolveStableVersionInput(versionSpec, manifest)
     if (!stableVersion) {
       throw new Error(`Unable to find Specmatic version '${versionSpec}'.`)
@@ -117,7 +118,7 @@ async function resolveVersionFromManifest(
   versionSpec: string,
   stable: boolean,
   auth: string | undefined,
-  manifest: tc.IToolRelease[]
+  manifest?: tc.IToolRelease[] | undefined
 ): Promise<string | undefined> {
   try {
     const info = await getInfoFromManifest(versionSpec, stable, auth, manifest)
@@ -183,7 +184,10 @@ export async function getManifest(
   auth: string | undefined
 ): Promise<tc.IToolRelease[]> {
   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
-  const releases: GithubRelease[] | null = await getGithubReleases(dlUrl, auth)
+  const releases: GithubRelease[] | null =
+    // eslint-disable-next-line import/no-commonjs
+    await module.exports.getGithubReleases(dlUrl, auth)
+
   if (!releases) {
     throw new Error('Specmatic releases url did not return results')
   }

@@ -94,7 +94,7 @@ describe('setup-specmatic', () => {
     })
     dbgSpy.mockImplementation(msg => {
       // uncomment to see debug output
-      // process.stderr.write(`${msg}\n`)
+      // process.stderr.write(`debug: ${msg}\n`)
     })
   })
 

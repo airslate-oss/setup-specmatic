@@ -9687,7 +9687,7 @@ exports["default"] = _default;
 /***/ }),
 
 /***/ 2574:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ (function(module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -9749,9 +9749,10 @@ var StableReleaseAlias;
 function getSpecmatic(versionSpec, checkLatest, auth) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const manifest = yield getManifest(auth);
+        let manifest;
         if (versionSpec === StableReleaseAlias.Stable ||
             versionSpec === StableReleaseAlias.OldStable) {
+            manifest = yield getManifest(auth);
             const stableVersion = yield resolveStableVersionInput(versionSpec, manifest);
             if (!stableVersion) {
                 throw new Error(`Unable to find Specmatic version '${versionSpec}'.`);
@@ -9855,7 +9856,9 @@ exports.getInfoFromManifest = getInfoFromManifest;
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
         const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
-        const releases = yield getGithubReleases(dlUrl, auth);
+        const releases = 
+        // eslint-disable-next-line import/no-commonjs
+        yield module.exports.getGithubReleases(dlUrl, auth);
         if (!releases) {
             throw new Error('Specmatic releases url did not return results');
         }
