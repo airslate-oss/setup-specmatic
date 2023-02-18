@@ -221,7 +221,9 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(dlSpy).toHaveBeenCalledWith(
-      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar',
+      undefined,
+      undefined
     )
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
@@ -243,7 +245,9 @@ describe('setup-specmatic', () => {
     await main.run()
 
     expect(dlSpy).toHaveBeenCalledWith(
-      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar'
+      'https://github.com/znsio/specmatic/releases/download/0.39.1/specmatic.jar',
+      undefined,
+      undefined
     )
     expect(cnSpy).toHaveBeenCalledWith(`::add-path::${toolPath}${osm.EOL}`)
   })
