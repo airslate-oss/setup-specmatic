@@ -15,13 +15,17 @@
 name: Basic validation
 
 on:
-  pull_request:
-    branches: [main]
-    paths-ignore:
-      - '**.md'
   push:
-    paths-ignore:
-      - '**.md'
+    branches-ignore:
+      # These should always correspond to pull requests, so ignore them for
+      # the push trigger and let them be triggered by the pull_request
+      # trigger, avoiding running the workflow twice.  This is a minor
+      # optimization so there's no need to ensure this is comprehensive.
+      - 'dependabot/**'
+
+  pull_request:
+    branches:
+      - main
 
 jobs:
   basic-validation:
