@@ -1,7 +1,7 @@
 # Contributing
 
 If you would like to contribute to `setup-specmatic`, please take a look at the
-`current issues <https://github.com/airslate-oss/setup-specmatic/issues>`_.  If
+[current issues](https://github.com/airslate-oss/setup-specmatic/issues).  If
 there is a bug or feature that you want but it isn't listed, make an issue and
 work on it.
 
@@ -23,7 +23,7 @@ Guidelines for bug reports:
 * **Use the GitHub issue search** — check if the issue has already been
   reported.
 * **Check if the issue has been fixed** — try to reproduce it using the latest
-  ``main`` branch in the repository.
+  `main` branch in the repository.
 * Isolate the problem — create a reduced test case and a live example.
 
 A good bug report shouldn't leave others needing to chase you up for more
@@ -50,8 +50,8 @@ project:
 
 1. Check for open issues or open a fresh issue to start a discussion around a
    feature idea or a bug.
-2. Fork `the repository <https://github.com/airslate-oss/setup-specmatic>`_
-   on GitHub to start making your changes to the ``main`` branch
+2. Fork [the repository](https://github.com/airslate-oss/setup-specmatic)
+   on GitHub to start making your changes to the `main` branch
    (or branch off of it).
 3. Write a test which shows that the bug was fixed or that the feature works as
    expected.
