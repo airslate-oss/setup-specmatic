@@ -60,7 +60,7 @@ describe('setup-specmatic', () => {
     // switch path join behavior based on set os.platform
     joinSpy = jest.spyOn(path, 'join')
     joinSpy.mockImplementation((...paths: string[]): string => {
-      if (os['platform'] == 'win32') {
+      if (os['platform'] === 'win32') {
         return win32Join(...paths)
       }
       return posixJoin(...paths)
@@ -82,7 +82,7 @@ describe('setup-specmatic', () => {
     cnSpy = jest.spyOn(process.stdout, 'write')
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
-    getSpy.mockImplementation(() => <im.GithubRelease[] | null>jsonData)
+    getSpy.mockImplementation(() => jsonData as im.GithubRelease[] | null)
     cnSpy.mockImplementation(line => {
       // uncomment to debug
       // process.stderr.write(`write: ${line}\n`)
@@ -109,7 +109,7 @@ describe('setup-specmatic', () => {
     os.platform = 'darwin'
     os.arch = 'x64'
 
-    let match = await im.getInfoFromManifest('0.58.0', true, 'mocktoken')
+    const match = await im.getInfoFromManifest('0.58.0', true, 'mocktoken')
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.58.0')
@@ -122,7 +122,7 @@ describe('setup-specmatic', () => {
     os.platform = 'linux'
     os.arch = 'x64'
 
-    let match = await im.getInfoFromManifest('0.39', true, 'mocktoken')
+    const match = await im.getInfoFromManifest('0.39', true, 'mocktoken')
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
@@ -135,7 +135,7 @@ describe('setup-specmatic', () => {
     os.platform = 'win32'
     os.arch = 'x64'
 
-    let match = await im.getInfoFromManifest('0.39', true, 'mocktoken')
+    const match = await im.getInfoFromManifest('0.39', true, 'mocktoken')
 
     expect(match).toBeDefined()
     expect(match!.resolvedVersion).toBe('0.39.1')
@@ -148,7 +148,7 @@ describe('setup-specmatic', () => {
     inputs['specmatic-version'] = '0.58.0'
     inputs.stable = 'true'
 
-    let toolPath = path.normalize('/cache/specmatic/0.58.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.58.0/x64')
     findSpy.mockImplementation(() => toolPath)
     await main.run()
 
@@ -160,7 +160,7 @@ describe('setup-specmatic', () => {
 
     inSpy.mockImplementation(name => inputs[name])
 
-    let toolPath = path.normalize('/cache/specmatic/0.58.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.58.0/x64')
     findSpy.mockImplementation(() => toolPath)
     await main.run()
 
@@ -170,7 +170,7 @@ describe('setup-specmatic', () => {
   it('finds a version of specmatic already in the cache', async () => {
     inputs['specmatic-version'] = '0.59.0'
 
-    let toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
     findSpy.mockImplementation(() => toolPath)
     await main.run()
 
@@ -180,7 +180,7 @@ describe('setup-specmatic', () => {
   it('finds a version in the cache and adds it to the path', async () => {
     inputs['specmatic-version'] = '0.59.0'
 
-    let toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.59.0/x64')
     findSpy.mockImplementation(() => toolPath)
     await main.run()
 
@@ -196,7 +196,7 @@ describe('setup-specmatic', () => {
     })
     await main.run()
 
-    expect(cnSpy).toHaveBeenCalledWith('::error::' + errMsg + osm.EOL)
+    expect(cnSpy).toHaveBeenCalledWith(`::error::${errMsg}${osm.EOL}`)
   })
 
   it('downloads a version not in the cache', async () => {
@@ -208,7 +208,7 @@ describe('setup-specmatic', () => {
     findSpy.mockImplementation(() => '')
     dlSpy.mockImplementation(() => '/some/temp/path')
 
-    let toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
     cacheSpy.mockImplementation(() => toolPath)
     writeFileSpy.mockImplementation()
 
@@ -232,7 +232,7 @@ describe('setup-specmatic', () => {
     findSpy.mockImplementation(() => '')
     dlSpy.mockImplementation(() => 'C:\\temp\\some\\path')
 
-    let toolPath = path.normalize('C:\\cache\\specmatic\\0.39.0\\x64')
+    const toolPath = path.normalize('C:\\cache\\specmatic\\0.39.0\\x64')
     cacheSpy.mockImplementation(() => toolPath)
     writeFileSpy.mockImplementation()
 
@@ -264,18 +264,18 @@ describe('setup-specmatic', () => {
     os.platform = 'linux'
     os.arch = 'x64'
 
-    let versionSpec = '0.37.0'
+    const versionSpec = '0.37.0'
 
     inputs['specmatic-version'] = versionSpec
     inputs['token'] = 'faketoken'
 
-    let expectedUrl =
+    const expectedUrl =
       'https://github.com/znsio/specmatic/releases/download/0.37.0/specmatic.jar'
 
     findSpy.mockImplementation(() => '')
 
     dlSpy.mockImplementation(async () => '/some/temp/path')
-    let toolPath = path.normalize('/cache/specmatic/0.37.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.37.0/x64')
     cacheSpy.mockImplementation(async () => toolPath)
     writeFileSpy.mockImplementation()
 
@@ -297,18 +297,18 @@ describe('setup-specmatic', () => {
     os.platform = 'linux'
     os.arch = 'x64'
 
-    let versionSpec = '0.35'
+    const versionSpec = '0.35'
 
     inputs['specmatic-version'] = versionSpec
     inputs['token'] = 'faketoken'
 
-    let expectedUrl =
+    const expectedUrl =
       'https://github.com/znsio/specmatic/releases/download/0.35.0/specmatic.jar'
 
     findSpy.mockImplementation(() => '')
 
     dlSpy.mockImplementation(async () => '/some/temp/path')
-    let toolPath = path.normalize('/cache/specmatic/0.35.0/x64')
+    const toolPath = path.normalize('/cache/specmatic/0.35.0/x64')
     cacheSpy.mockImplementation(async () => toolPath)
 
     await main.run()
@@ -473,7 +473,7 @@ describe('setup-specmatic', () => {
 
         findSpy.mockImplementation(() => '')
         dlSpy.mockImplementation(async () => '/some/temp/path')
-        let toolPath = path.normalize(`/cache/specmatic/${alias}/${arch}`)
+        const toolPath = path.normalize(`/cache/specmatic/${alias}/${arch}`)
         cacheSpy.mockImplementation(async () => toolPath)
 
         await main.run()
