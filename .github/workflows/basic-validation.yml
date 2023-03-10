@@ -83,8 +83,11 @@ jobs:
 
       - uses: codecov/codecov-action@v3
         with:
-          fail_ci_if_error: true
+          fail_ci_if_error: false
           verbose: true
+          name: codecov-umbrella
+          flags: unittests
+          env_vars: OS
 
       - name: Audit packages
         run: npm audit --audit-level=high
