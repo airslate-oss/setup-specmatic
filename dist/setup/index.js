@@ -9890,7 +9890,7 @@ var StableReleaseAlias;
 (function (StableReleaseAlias) {
     StableReleaseAlias["Stable"] = "stable";
     StableReleaseAlias["OldStable"] = "oldstable";
-})(StableReleaseAlias = exports.StableReleaseAlias || (exports.StableReleaseAlias = {}));
+})(StableReleaseAlias || (exports.StableReleaseAlias = StableReleaseAlias = {}));
 function getSpecmatic(versionSpec, checkLatest, auth) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
