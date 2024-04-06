@@ -33531,8 +33531,8 @@ var StableReleaseAlias;
     StableReleaseAlias["OldStable"] = "oldstable";
 })(StableReleaseAlias || (exports.StableReleaseAlias = StableReleaseAlias = {}));
 function getSpecmatic(versionSpec, checkLatest, auth) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         let manifest;
         if (versionSpec === StableReleaseAlias.Stable ||
             versionSpec === StableReleaseAlias.OldStable) {
