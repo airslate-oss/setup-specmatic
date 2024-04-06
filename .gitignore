@@ -19,3 +19,7 @@
 /lib
 # Code coverage
 /coverage
+
+# Files to ignore:
+# npm configuration file
+.npmrc

@@ -17,13 +17,25 @@ on:
 jobs:
   licensed:
     name: Licensed
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js 16.x
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 5
+          node-version: 16.x
+          cache: npm
+
+      - name: Setup npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
