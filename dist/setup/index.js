@@ -33711,7 +33711,7 @@ function releasesToToolRelease(releases) {
             files.push({
                 filename: 'specmatic.jar',
                 platform,
-                arch: 'x64',
+                arch: platform === 'darwin' ? 'arm64' : 'x64',
                 download_url: release.assets[0].browser_download_url
             });
         }
