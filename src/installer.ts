@@ -275,7 +275,7 @@ function releasesToToolRelease(releases: GithubRelease[]): tc.IToolRelease[] {
       files.push({
         filename: 'specmatic.jar',
         platform,
-        arch: 'x64',
+        arch: os.arch(),
         download_url: release.assets[0].browser_download_url
       })
     }

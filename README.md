@@ -191,7 +191,7 @@ jobs:
 
 `setup-specmatic` is released under the [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/),
 the code lives on [GitHub](https://github.com/airslate-oss/python-airslate), and the latest release on
-[GitHub Releases](https://github.com/airslate-oss/setup-specmatic/releases). It’s rigorously tested on Node.js 16+.
+[GitHub Releases](https://github.com/airslate-oss/setup-specmatic/releases). It’s rigorously tested on Node.js 18+.
 
 If you'd like to contribute to `setup-specmatic` you're most welcome!
 
