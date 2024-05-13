@@ -29,9 +29,6 @@ The action will first check the local cache for a version match.  If a version i
 the [releases](https://github.com/znsio/specmatic/releases) of the [specmatic](https://github.com/znsio/specmatic)
 repository. To change the default behavior, please use the [check-latest input](#check-latest-version).
 
-Supported OS architectures currently are:
-- x64
-
 **Note:** The `setup-specmatic` action uses packages which are built by Specmatic side.
 The action does not build JAR files from source code.
 
