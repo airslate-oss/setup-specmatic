@@ -51,6 +51,7 @@ export async function getSpecmatic(
   ) {
     manifest = await getManifest(auth)
     const stableVersion = await resolveStableVersionInput(versionSpec, manifest)
+    core.debug(`Resolved stable version: ${JSON.stringify(stableVersion)}`)
     if (!stableVersion) {
       throw new Error(`Unable to find Specmatic version '${versionSpec}'.`)
     }
@@ -190,8 +191,10 @@ export async function getManifest(
     throw new Error('Specmatic releases url did not return results')
   }
 
-  core.debug('Create version manifest from releases info')
+  core.debug(`Releases info: ${JSON.stringify(releases)}`)
+  core.debug('Create version manifest from releases info...')
   const manifest: tc.IToolRelease[] = releasesToToolRelease(releases)
+  core.debug(`Resulted manifest: ${JSON.stringify(manifest)}`)
 
   return manifest
 }
@@ -307,18 +310,18 @@ export async function resolveStableVersionInput(
     })
     .filter(item => !!item && !semver.prerelease(item))
 
+  core.debug(`Filtered releases info: ${JSON.stringify(releases)}`)
   if (versionSpec === StableReleaseAlias.Stable) {
     return releases[0]
-  } else {
-    const versions = releases.map(
-      release => `${semver.major(release)}.${semver.minor(release)}`
-    )
-    const uniqueVersions = Array.from(new Set(versions))
-
-    const oldStableVersion = releases.find(item =>
-      item.startsWith(uniqueVersions[1])
-    )
-
-    return oldStableVersion
   }
+
+  const versions = releases.map(
+    release => `${semver.major(release)}.${semver.minor(release)}`
+  )
+  core.debug(`Filtered versions info: ${JSON.stringify(versions)}`)
+
+  const uniqueVersions = Array.from(new Set(versions))
+  core.debug(`Unique versions info: ${JSON.stringify(uniqueVersions)}`)
+
+  return releases.find(item => item.startsWith(uniqueVersions[1]))
 }
