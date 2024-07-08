@@ -33017,7 +33017,9 @@ function resolveStableVersionInput(versionSpec, manifest) {
         core.debug(`Filtered versions info: ${JSON.stringify(versions)}`);
         const uniqueVersions = Array.from(new Set(versions));
         core.debug(`Unique versions info: ${JSON.stringify(uniqueVersions)}`);
-        return releases.find(item => item.startsWith(uniqueVersions[1]));
+        return uniqueVersions.length > 1
+            ? releases.find(item => item.startsWith(uniqueVersions[1]))
+            : releases.find(item => item.startsWith(uniqueVersions[0]));
     });
 }
 exports.resolveStableVersionInput = resolveStableVersionInput;
