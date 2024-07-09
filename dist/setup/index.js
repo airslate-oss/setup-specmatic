@@ -32782,7 +32782,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolveStableVersionInput = exports.parseSpecmaticVersionFile = exports.makeSemver = exports.getGithubReleases = exports.getManifest = exports.getInfoFromManifest = exports.getSpecmatic = exports.StableReleaseAlias = void 0;
+exports.StableReleaseAlias = void 0;
+exports.getSpecmatic = getSpecmatic;
+exports.getInfoFromManifest = getInfoFromManifest;
+exports.getManifest = getManifest;
+exports.getGithubReleases = getGithubReleases;
+exports.makeSemver = makeSemver;
+exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
+exports.resolveStableVersionInput = resolveStableVersionInput;
 const tc = __importStar(__nccwpck_require__(7784));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
@@ -32852,7 +32859,6 @@ function getSpecmatic(versionSpec, checkLatest, auth) {
         }
     });
 }
-exports.getSpecmatic = getSpecmatic;
 function resolveVersionFromManifest(versionSpec, stable, auth, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -32899,7 +32905,6 @@ function getInfoFromManifest(versionSpec, stable, auth, manifest) {
         return info;
     });
 }
-exports.getInfoFromManifest = getInfoFromManifest;
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
         const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
@@ -32916,7 +32921,6 @@ function getManifest(auth) {
         return manifest;
     });
 }
-exports.getManifest = getManifest;
 function writeJarScript(tool) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info('Creating wrapper...');
@@ -32953,7 +32957,6 @@ function getGithubReleases(dlUrl, auth) {
         return (yield http.getJson(dlUrl, headers)).result;
     });
 }
-exports.getGithubReleases = getGithubReleases;
 // Convert the specmatic version syntax into semver for semver matching
 // 0.58.0 => 0.58.0
 // 0.59 => 0.59
@@ -32974,7 +32977,6 @@ function makeSemver(version) {
     }
     return fullVersion;
 }
-exports.makeSemver = makeSemver;
 function releasesToToolRelease(releases) {
     const manifest = [];
     for (const release of releases) {
@@ -33000,7 +33002,6 @@ function parseSpecmaticVersionFile(versionFilePath) {
     const match = contents.match(/^(\d+(\.\d+)*)/m);
     return (match ? match[1] : '').trim();
 }
-exports.parseSpecmaticVersionFile = parseSpecmaticVersionFile;
 function resolveStableVersionInput(versionSpec, manifest) {
     return __awaiter(this, void 0, void 0, function* () {
         const releases = manifest
@@ -33022,7 +33023,6 @@ function resolveStableVersionInput(versionSpec, manifest) {
             : releases.find(item => item.startsWith(uniqueVersions[0]));
     });
 }
-exports.resolveStableVersionInput = resolveStableVersionInput;
 
 
 /***/ }),
@@ -33074,7 +33074,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const io = __importStar(__nccwpck_require__(7436));
 const installer = __importStar(__nccwpck_require__(2574));
@@ -33111,7 +33111,6 @@ function run() {
         }
     });
 }
-exports.run = run;
 function resolveVersionInput() {
     let version = core.getInput('specmatic-version');
     const versionFilePath = core.getInput('specmatic-version-file');
