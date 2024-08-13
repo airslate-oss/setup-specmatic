@@ -47,7 +47,7 @@ jobs:
           bundler-cache: true
 
       - name: Install licensed tool
-        uses: github/setup-licensed@v1.1.4
+        uses: github/setup-licensed@v1.2.0
         with:
           version: '4.x'
 
