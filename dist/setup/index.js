@@ -32410,9 +32410,7 @@ function getInfoFromManifest(versionSpec, stable, auth, manifest) {
 function getManifest(auth) {
     return __awaiter(this, void 0, void 0, function* () {
         const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases';
-        const releases = 
-        // eslint-disable-next-line import/no-commonjs
-        yield module.exports.getGithubReleases(dlUrl, auth);
+        const releases = yield module.exports.getGithubReleases(dlUrl, auth);
         if (!releases) {
             throw new Error('Specmatic releases url did not return results');
         }
