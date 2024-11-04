@@ -184,7 +184,6 @@ export async function getManifest(
 ): Promise<tc.IToolRelease[]> {
   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
   const releases: GithubRelease[] | null =
-    // eslint-disable-next-line import/no-commonjs
     await module.exports.getGithubReleases(dlUrl, auth)
 
   if (!releases) {

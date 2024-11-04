@@ -7,4 +7,4 @@ module.exports = {
   trailingComma: 'none',
   bracketSpacing: false,
   arrowParens: 'avoid',
-};
+}
