@@ -7,5 +7,8 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
-  verbose: true
+  verbose: true,
+  forceExit: true,
+  detectOpenHandles: true,
+  testTimeout: 10000
 }
