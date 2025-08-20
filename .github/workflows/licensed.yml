@@ -41,7 +41,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Install ruby
-        uses: ruby/setup-ruby@v1.238.0
+        uses: ruby/setup-ruby@v1.256.0
         with:
           ruby-version: '3.2'
           bundler-cache: true
