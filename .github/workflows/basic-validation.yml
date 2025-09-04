@@ -54,7 +54,7 @@ jobs:
           fetch-depth: 5
 
       - name: Setup Node.js 22.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: npm
