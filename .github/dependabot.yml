@@ -27,5 +27,5 @@ updates:
     ignore:
       # v4 is ESM-only and incompatible with @vercel/ncc CJS bundling.
       # We well update to v4 when we migrate to ESM and update our bundling strategy.
-      - dependency-name: "@actions/http-client"
-        update-types: ["version-update:semver-major"]
+      - dependency-name: '@actions/http-client'
+        update-types: ['version-update:semver-major']
