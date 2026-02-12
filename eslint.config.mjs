@@ -1,3 +1,10 @@
+// This file is part of the setup-specmatic.
+//
+// Copyright (c) 2023-2026 airSlate, Inc.
+//
+// For the full copyright and license information, please view
+// the LICENSE file that was distributed with this source code.
+
 import stylistic from '@stylistic/eslint-plugin'
 import typescriptEslint from "@typescript-eslint/eslint-plugin"
 import jest from "eslint-plugin-jest"
@@ -20,7 +27,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ["dist/**"],
+    ignores: ["lib/**", "dist/**", "coverage/**"],
   },
   ...compat.extends(
     "eslint:recommended",
