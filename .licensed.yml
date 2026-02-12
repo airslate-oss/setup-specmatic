@@ -26,3 +26,5 @@ allowed:
 reviewed:
   npm:
     - '@actions/http-client' # MIT
+    - 'color-convert' # MIT
+    - 'jsonify' # public domain
