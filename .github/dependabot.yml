@@ -29,6 +29,40 @@ updates:
           - patch
         patterns:
           - '*'
+    ignore:
+      # TODO: Migrate the action to ESM so we can accept these major bumps.
+      #
+      # Why these are pinned:
+      #   This action is published as a pre-bundled CommonJS file
+      #   (dist/setup/index.js, referenced from action.yml). We build it with
+      #   @vercel/ncc in CJS mode. Starting with v4, the @actions/* toolkit
+      #   packages ship as ESM-only and drop the CJS entry from their
+      #   `exports` field, so ncc's CJS resolver fails with
+      #   "Package path . is not exported". That breaks both `npm run build`
+      #   and the Check dist CI guard, so Dependabot PRs for these majors
+      #   can never be auto-merged as-is.
+      #
+      # What needs to happen to unpin:
+      #   1. Switch action.yml runtime from `node16` to `node20` (node16 is
+      #      already deprecated by GitHub).
+      #   2. Flip the build to ESM: either ncc's ESM output, or replace ncc
+      #      with esbuild (`--format=esm --platform=node`).
+      #   3. Update tsconfig.json (`module: NodeNext`,
+      #      `moduleResolution: NodeNext`) and add `"type": "module"` to
+      #      package.json.
+      #   4. Fix imports that rely on CJS semantics (e.g. `import * as`
+      #      patterns, default-vs-namespace mismatches for semver, nock,
+      #      etc.) and add explicit `.js` extensions where required.
+      #   5. Rerun the full test matrix on ubuntu/macos/windows, then remove
+      #      the entries below.
+      #
+      # Until the migration lands, keep pinning every @actions/* package
+      # that has an ESM-only major. Add new entries here as Dependabot
+      # surfaces them.
+      - dependency-name: '@actions/http-client'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@actions/tool-cache'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
@@ -48,8 +82,3 @@ updates:
       actions:
         patterns:
           - '*'
-    ignore:
-      # v4 is ESM-only and incompatible with @vercel/ncc CJS bundling.
-      # We well update to v4 when we migrate to ESM and update our bundling strategy.
-      - dependency-name: '@actions/http-client'
-        update-types: ['version-update:semver-major']
