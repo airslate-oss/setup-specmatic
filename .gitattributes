@@ -12,5 +12,4 @@
 # Auto-detect text files, ensure they use LF.
 * text=auto eol=lf
 
-.licenses/** -diff linguist-generated=true
 dist/** -diff linguist-generated=true
