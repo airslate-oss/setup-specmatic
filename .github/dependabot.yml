@@ -1,6 +1,6 @@
 # This file is part of the setup-specmatic.
 #
-# Copyright (c) 2023 airSlate, Inc.
+# Copyright (c) 2023-2026 airSlate, Inc.
 #
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
@@ -8,22 +8,46 @@
 version: 2
 
 updates:
-  - package-ecosystem: github-actions
-    # Workflow files stored in the
-    # default location of `.github/workflows`
-    directory: /
-    schedule:
-      interval: daily
-    assignees:
-      - sergeyklay
-
   - package-ecosystem: npm
-    # package.json stored in repository root.
     directory: /
     schedule:
-      interval: daily
-    assignees:
-      - sergeyklay
+      interval: weekly
+      day: monday
+    target-branch: main
+    assignees: [cicdbot]
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      go-minor-patch:
+        update-types:
+          - minor
+          - patch
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    target-branch: main
+    assignees: [cicdbot]
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - github_actions
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    groups:
+      actions:
+        patterns:
+          - "*"
     ignore:
       # v4 is ESM-only and incompatible with @vercel/ncc CJS bundling.
       # We well update to v4 when we migrate to ESM and update our bundling strategy.
