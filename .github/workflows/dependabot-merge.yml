@@ -2,7 +2,7 @@ name: Dependabot auto-merge
 
 on:
   workflow_run:
-    workflows: [CI]
+    workflows: [Basic validation]
     types:
       - completed
 
