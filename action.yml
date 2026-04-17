@@ -28,7 +28,7 @@ outputs:
     description: The installed specmatic version. Useful when given a version range as input.
 
 runs:
-  using: node16
+  using: node20
   main: dist/setup/index.js
 
 branding:
