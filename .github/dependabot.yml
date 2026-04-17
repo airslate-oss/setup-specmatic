@@ -63,6 +63,12 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@actions/tool-cache'
         update-types: ['version-update:semver-major']
+      - dependency-name: '@actions/core'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@actions/io'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@actions/exec'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
