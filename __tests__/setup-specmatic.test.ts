@@ -3,8 +3,8 @@ import * as tc from '@actions/tool-cache'
 import fs from 'fs'
 import osm from 'os'
 import path from 'path'
-import * as main from '../src/main'
-import * as im from '../src/installer'
+import * as main from '../src/main.js'
+import * as im from '../src/installer.js'
 
 import jsonData from './data/specmatic-releases.json'
 
@@ -15,22 +15,22 @@ describe('setup-specmatic', () => {
   let inputs = {} as any
   let os = {} as any
 
-  let inSpy: jest.SpyInstance
-  let getBooleanInputSpy: jest.SpyInstance
-  let findSpy: jest.SpyInstance
-  let cnSpy: jest.SpyInstance
-  let logSpy: jest.SpyInstance
-  let getSpy: jest.SpyInstance
-  let dbgSpy: jest.SpyInstance
-  let platSpy: jest.SpyInstance
-  let archSpy: jest.SpyInstance
-  let joinSpy: jest.SpyInstance
-  let dlSpy: jest.SpyInstance
-  let cacheSpy: jest.SpyInstance
-  let existsSpy: jest.SpyInstance
-  let readFileSpy: jest.SpyInstance
-  let writeFileSpy: jest.SpyInstance
-  let getAllVersionsSpy: jest.SpyInstance
+  let inSpy: any
+  let getBooleanInputSpy: any
+  let findSpy: any
+  let cnSpy: any
+  let logSpy: any
+  let getSpy: any
+  let dbgSpy: any
+  let platSpy: any
+  let archSpy: any
+  let joinSpy: any
+  let dlSpy: any
+  let cacheSpy: any
+  let existsSpy: any
+  let readFileSpy: any
+  let writeFileSpy: any
+  let getAllVersionsSpy: any
 
   beforeAll(async () => {
     // Stub out ENV file functionality so we can verify it writes
@@ -46,9 +46,9 @@ describe('setup-specmatic', () => {
     // @actions/core
     inputs = {}
     inSpy = jest.spyOn(core, 'getInput')
-    inSpy.mockImplementation(name => inputs[name])
+    inSpy.mockImplementation((name: string) => inputs[name])
     getBooleanInputSpy = jest.spyOn(core, 'getBooleanInput')
-    getBooleanInputSpy.mockImplementation(name => inputs[name])
+    getBooleanInputSpy.mockImplementation((name: string) => inputs[name])
 
     // node
     os = {}
@@ -70,7 +70,7 @@ describe('setup-specmatic', () => {
     findSpy = jest.spyOn(tc, 'find')
     dlSpy = jest.spyOn(tc, 'downloadTool')
     cacheSpy = jest.spyOn(tc, 'cacheFile')
-    getSpy = jest.spyOn(im, 'getGithubReleases')
+    getSpy = jest.spyOn(im._fns, 'getGithubReleases')
     getAllVersionsSpy = jest.spyOn(im, 'getManifest')
 
     // io
@@ -83,18 +83,9 @@ describe('setup-specmatic', () => {
     logSpy = jest.spyOn(core, 'info')
     dbgSpy = jest.spyOn(core, 'debug')
     getSpy.mockImplementation(() => jsonData as im.GithubRelease[] | null)
-    cnSpy.mockImplementation(line => {
-      // uncomment to debug
-      // process.stderr.write(`write: ${line}\n`)
-    })
-    logSpy.mockImplementation(line => {
-      // uncomment to debug
-      // process.stderr.write(`log: ${line}\n`)
-    })
-    dbgSpy.mockImplementation(msg => {
-      // uncomment to see debug output
-      // process.stderr.write(`debug: ${msg}\n`)
-    })
+    cnSpy.mockImplementation((_line: unknown) => true)
+    logSpy.mockImplementation((_line: string) => undefined)
+    dbgSpy.mockImplementation((_msg: string) => undefined)
   })
 
   afterAll(async () => {
@@ -158,7 +149,7 @@ describe('setup-specmatic', () => {
   it('evaluates to stable with no input', async () => {
     inputs['specmatic-version'] = '0.58.0'
 
-    inSpy.mockImplementation(name => inputs[name])
+    inSpy.mockImplementation((name: string) => inputs[name])
 
     const toolPath = path.normalize('/cache/specmatic/0.58.0/x64')
     findSpy.mockImplementation(() => toolPath)
@@ -210,7 +201,7 @@ describe('setup-specmatic', () => {
 
     const toolPath = path.normalize('/cache/specmatic/0.39.0/x64')
     cacheSpy.mockImplementation(() => toolPath)
-    writeFileSpy.mockImplementation()
+    writeFileSpy.mockImplementation(() => Promise.resolve())
 
     await main.run()
 
@@ -234,7 +225,7 @@ describe('setup-specmatic', () => {
 
     const toolPath = path.normalize('C:\\cache\\specmatic\\0.39.0\\x64')
     cacheSpy.mockImplementation(() => toolPath)
-    writeFileSpy.mockImplementation()
+    writeFileSpy.mockImplementation(() => Promise.resolve())
 
     await main.run()
 
@@ -277,7 +268,7 @@ describe('setup-specmatic', () => {
     dlSpy.mockImplementation(async () => '/some/temp/path')
     const toolPath = path.normalize('/cache/specmatic/0.37.0/x64')
     cacheSpy.mockImplementation(async () => toolPath)
-    writeFileSpy.mockImplementation()
+    writeFileSpy.mockImplementation(() => Promise.resolve())
 
     await main.run()
 
@@ -367,7 +358,7 @@ describe('setup-specmatic', () => {
       findSpy.mockReturnValue(toolPath)
       dlSpy.mockImplementation(async () => '/some/temp/path')
       cacheSpy.mockImplementation(async () => toolPath)
-      writeFileSpy.mockImplementation()
+      writeFileSpy.mockImplementation(() => Promise.resolve())
 
       await main.run()
 
@@ -392,7 +383,7 @@ describe('setup-specmatic', () => {
         `/cache/specmatic/${patchVersion}/${arch}`
       )
       cacheSpy.mockImplementation(async () => toolPath)
-      writeFileSpy.mockImplementation()
+      writeFileSpy.mockImplementation(() => Promise.resolve())
 
       await main.run()
 

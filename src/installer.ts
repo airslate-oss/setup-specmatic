@@ -183,8 +183,10 @@ export async function getManifest(
   auth: string | undefined
 ): Promise<tc.IToolRelease[]> {
   const dlUrl = 'https://api.github.com/repos/znsio/specmatic/releases'
-  const releases: GithubRelease[] | null =
-    await module.exports.getGithubReleases(dlUrl, auth)
+  const releases: GithubRelease[] | null = await _fns.getGithubReleases(
+    dlUrl,
+    auth
+  )
 
   if (!releases) {
     throw new Error('Specmatic releases url did not return results')
@@ -240,6 +242,10 @@ export async function getGithubReleases(
   // this returns versions descending so latest is first
   return (await http.getJson<GithubRelease[]>(dlUrl, headers)).result
 }
+
+// Indirection object so tests can replace getGithubReleases via jest.spyOn
+// under ESM (named exports are read-only bindings).
+export const _fns = {getGithubReleases}
 
 // Convert the specmatic version syntax into semver for semver matching
 // 0.58.0 => 0.58.0
