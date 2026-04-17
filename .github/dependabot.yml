@@ -20,15 +20,15 @@ updates:
       - dependencies
       - javascript
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     groups:
       go-minor-patch:
         update-types:
           - minor
           - patch
         patterns:
-          - "*"
+          - '*'
 
   - package-ecosystem: github-actions
     directory: /
@@ -42,12 +42,12 @@ updates:
       - dependencies
       - github_actions
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: 'ci'
+      include: 'scope'
     groups:
       actions:
         patterns:
-          - "*"
+          - '*'
     ignore:
       # v4 is ESM-only and incompatible with @vercel/ncc CJS bundling.
       # We well update to v4 when we migrate to ESM and update our bundling strategy.
