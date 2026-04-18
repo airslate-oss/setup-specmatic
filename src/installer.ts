@@ -85,13 +85,12 @@ export async function getSpecmatic(
   }
 
   core.info(`Attempting to download ${versionSpec}...`)
-  let info: ISpecmaticVersionInfo | null = null
 
   //
   // Try download using manifest file
   //
   try {
-    info = await getInfoFromManifest(versionSpec, true, auth, manifest)
+    const info = await getInfoFromManifest(versionSpec, true, auth, manifest)
     if (info) {
       return await installSpecmaticVersion(info, auth)
     } else {
@@ -203,18 +202,12 @@ export async function getManifest(
 async function writeJarScript(tool: ISpecmaticVersionInfo): Promise<void> {
   core.info('Creating wrapper...')
 
-  let header = ''
-  let wrapper = ''
-  let filename = tool.name
   const cmd = `java -jar "${path.join(tool.installPath, tool.fileName)}"`
+  const isWindows = os.platform() === 'win32'
 
-  if (os.platform() === 'win32') {
-    wrapper = `${cmd} %*`
-    filename = `${tool.name}.bat`
-  } else {
-    header = `#!/usr/bin/env bash${os.EOL}`
-    wrapper = `exec -a ${tool.name} ${cmd} "$@"`
-  }
+  const header = isWindows ? '' : `#!/usr/bin/env bash${os.EOL}`
+  const wrapper = isWindows ? `${cmd} %*` : `exec -a ${tool.name} ${cmd} "$@"`
+  const filename = isWindows ? `${tool.name}.bat` : tool.name
 
   const script = `${header}${wrapper}${os.EOL}`
   const scriptPath = path.join(tool.installPath, filename)

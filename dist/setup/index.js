@@ -22511,9 +22511,8 @@ async function getSpecmatic(versionSpec, checkLatest, auth) {
     return toolPath;
   }
   info(`Attempting to download ${versionSpec}...`);
-  let info2 = null;
   try {
-    info2 = await getInfoFromManifest(versionSpec, true, auth, manifest);
+    const info2 = await getInfoFromManifest(versionSpec, true, auth, manifest);
     if (info2) {
       return await installSpecmaticVersion(info2, auth);
     } else {
@@ -22582,17 +22581,11 @@ async function getManifest(auth) {
 }
 async function writeJarScript(tool) {
   info("Creating wrapper...");
-  let header = "";
-  let wrapper = "";
-  let filename = tool.name;
   const cmd = `java -jar "${path5.join(tool.installPath, tool.fileName)}"`;
-  if (os7.platform() === "win32") {
-    wrapper = `${cmd} %*`;
-    filename = `${tool.name}.bat`;
-  } else {
-    header = `#!/usr/bin/env bash${os7.EOL}`;
-    wrapper = `exec -a ${tool.name} ${cmd} "$@"`;
-  }
+  const isWindows = os7.platform() === "win32";
+  const header = isWindows ? "" : `#!/usr/bin/env bash${os7.EOL}`;
+  const wrapper = isWindows ? `${cmd} %*` : `exec -a ${tool.name} ${cmd} "$@"`;
+  const filename = isWindows ? `${tool.name}.bat` : tool.name;
   const script = `${header}${wrapper}${os7.EOL}`;
   const scriptPath = path5.join(tool.installPath, filename);
   await fs5.promises.writeFile(scriptPath, script, { mode: 365 });
