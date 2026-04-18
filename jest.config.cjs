@@ -45,7 +45,8 @@ module.exports = {
           target: 'ES2022',
           esModuleInterop: true,
           resolveJsonModule: true,
-          allowJs: true
+          allowJs: true,
+          types: ['jest', 'node']
         }
       }
     ]
