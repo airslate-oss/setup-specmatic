@@ -1,0 +1,15 @@
+# This file is part of the setup-specmatic.
+#
+# Copyright (c) 2023-2026 airSlate, Inc.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+# CodeQL should scan our source, not the pre-bundled action runtime.
+# dist/setup/index.js is a build artifact that inlines every transitive
+# dependency (undici, etc.), and the scanner flags third-party code we
+# don't author or control.
+name: 'CodeQL config'
+
+paths-ignore:
+  - dist
