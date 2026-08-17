@@ -271,13 +271,25 @@ function releasesToToolRelease(releases: GithubRelease[]): tc.IToolRelease[] {
   const manifest: tc.IToolRelease[] = []
 
   for (const release of releases) {
+    // Upstream sometimes publishes a release with no attached artifacts,
+    // either because the tag lands before the jar upload or because the
+    // upload never happens. There is nothing to download for such a
+    // release, so it must stay out of the manifest entirely: reading the
+    // first asset unconditionally throws a TypeError that aborts the whole
+    // run, including runs that asked for an entirely different version.
+    const [asset] = release.assets
+    if (!asset) {
+      core.debug(`Skipping release ${release.tag_name}: no downloadable assets`)
+      continue
+    }
+
     const files: tc.IToolReleaseFile[] = []
     for (const platform of ['darwin', 'linux', 'win32']) {
       files.push({
         filename: 'specmatic.jar',
         platform,
         arch: os.arch(),
-        download_url: release.assets[0].browser_download_url
+        download_url: asset.browser_download_url
       })
     }
 

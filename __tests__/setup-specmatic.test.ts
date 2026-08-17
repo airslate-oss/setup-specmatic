@@ -451,6 +451,59 @@ describe('setup-specmatic', () => {
     })
   })
 
+  describe('releases without assets', () => {
+    // Upstream has published tags carrying no artifacts at all (e.g. the
+    // specmatic 2.52.0 and 2.53.0 tags). Reading the first asset of such a
+    // release used to throw and abort every run, whatever version it asked
+    // for, so these releases must simply be absent from the manifest.
+    const releases = [
+      {
+        tag_name: '0.60.0',
+        html_url: 'https://github.com/znsio/specmatic/releases/tag/0.60.0',
+        assets: []
+      },
+      ...(jsonData as im.GithubRelease[])
+    ]
+
+    beforeEach(() => {
+      getSpy.mockImplementation(() => releases as im.GithubRelease[] | null)
+    })
+
+    it('omits an asset-less release from the manifest', async () => {
+      os.platform = 'darwin'
+      os.arch = 'x64'
+
+      const manifest = await im.getManifest('mocktoken')
+
+      expect(manifest.map(release => release.version)).not.toContain('0.60.0')
+      expect(manifest.map(release => release.version)).toContain('0.59.0')
+    })
+
+    it('still resolves a version published after an asset-less release', async () => {
+      os.platform = 'darwin'
+      os.arch = 'x64'
+
+      const match = await im.getInfoFromManifest('0.59.0', true, 'mocktoken')
+
+      expect(match).toBeDefined()
+      expect(match!.resolvedVersion).toBe('0.59.0')
+      expect(match!.downloadUrl).toBe(
+        'https://github.com/znsio/specmatic/releases/download/0.59.0/specmatic.jar'
+      )
+    })
+
+    it('resolves stable to the newest release that has an asset', async () => {
+      os.platform = 'darwin'
+      os.arch = 'x64'
+
+      const manifest = await im.getManifest('mocktoken')
+
+      await expect(
+        im.resolveStableVersionInput('stable', manifest)
+      ).resolves.toBe('0.59.0')
+    })
+  })
+
   describe('stable/oldstable aliases', () => {
     it.each(['stable', 'oldstable'])(
       'acquires latest specmatic version with %s specmatic-version input',
