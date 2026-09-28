@@ -42,12 +42,12 @@
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.2",
     "@types/semver": "^7.8.0",
-    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
     "@typescript-eslint/parser": "^8.55.0",
     "esbuild": "^0.28.2",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jest": "^29.16.6",
     "eslint-plugin-prettier": "^5.5.6",
@@ -55,8 +55,8 @@
     "jest": "^30.5.2",
     "jest-circus": "^30.2.0",
     "nock": "^14.0.17",
-    "prettier": "^3.9.8",
-    "ts-jest": "^29.4.12",
+    "prettier": "^3.9.9",
+    "ts-jest": "^29.4.14",
     "typescript": "^6.0.3"
   }
 }
